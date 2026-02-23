@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+// import "@500ux/components/styles/base.css"; This will be used in the production dont remove keep in all components
 
 export const version = "1.0.0";
 
