@@ -122,7 +122,7 @@ export default function Faqs({
             <div key={index} className="ux:group">
               <button
                 onClick={() => toggleItem(index)}
-                className="ux:flex ux:w-full ux:items-center ux:justify-between ux:px-6 ux:py-4 ux:text-left ux:transition-colors ux:hover:bg-slate-50 ux:focus:outline-none ux:focus:ring-2 ux:focus:ring-slate-200"
+                className="ux:flex ux:w-full ux:items-center ux:justify-between ux:px-6 ux:py-4 ux:text-left ux:transition-colors ux:hover:bg-slate-50 ux:focus:outline-none ux:focus:ring-2 ux:focus:ring-slate-200 ux:cursor-pointer"
                 aria-expanded={isOpen}
                 aria-controls={`faq-answer-${index}`}
                 style={{ backgroundColor: cardBg, fontFamily }}

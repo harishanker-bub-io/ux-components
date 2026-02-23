@@ -178,7 +178,7 @@ function LocationCard({
           {(location.phone || location.email) && (
             <button
               onClick={location.phone ? onCall : onEmail}
-              className="ux:flex-1 ux:py-2 ux:px-3 ux:rounded-xl ux:text-xs ux:font-semibold ux:border ux:border-slate-200 ux:text-slate-600 ux:bg-slate-50 hover:ux:bg-slate-100 hover:ux:border-slate-300 ux:transition-all ux:cursor-pointer ux:flex ux:items-center ux:justify-center ux:gap-1.5"
+              className="ux:flex-1 ux:py-2.5 ux:px-3 ux:rounded-xl ux:text-xs ux:font-bold ux:border ux:border-slate-200 ux:text-slate-900 ux:bg-white ux:shadow-sm hover:ux:bg-slate-50 hover:ux:border-slate-300 ux:transition-all ux:cursor-pointer active:ux:scale-[0.98] ux:flex ux:items-center ux:justify-center ux:gap-1.5"
             >
               {location.phone ? <PhoneIcon /> : <MailIcon />}
               {location.phone ? "Call" : "Email"}
@@ -186,7 +186,7 @@ function LocationCard({
           )}
           <button
             onClick={onViewMap}
-            className="ux:flex-1 ux:py-2 ux:px-3 ux:rounded-xl ux:text-xs ux:font-semibold ux:bg-slate-900 ux:text-white hover:ux:bg-slate-700 ux:transition-all ux:cursor-pointer ux:flex ux:items-center ux:justify-center ux:gap-1.5"
+            className="ux:flex-1 ux:py-2.5 ux:px-3 ux:rounded-xl ux:text-xs ux:font-bold ux:bg-slate-900 ux:text-white ux:shadow-sm hover:ux:bg-slate-700 active:ux:scale-[0.98] ux:transition-all ux:cursor-pointer ux:flex ux:items-center ux:justify-center ux:gap-1.5"
           >
             <PinIcon />
             View on Map

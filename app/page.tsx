@@ -269,6 +269,7 @@ export default function Home() {
               subtitle="Responsive image with fullscreen support."
               media={{
                 src: "https://images.unsplash.com/photo-1482192505345-5655af888cc4?w=1400&h=900&fit=crop",
+                type: "image",
                 alt: "Modern workspace with large windows",
               }}
               aspectRatio="16/9"
@@ -355,7 +356,7 @@ export default function Home() {
               title="PDF External Flow"
               subtitle="Render as action card that opens PDF in a new tab."
               media={{
-                src: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                src: "https://www.orimi.com/pdf-test.pdf",
                 alt: "Dummy PDF",
                 downloadName: "dummy.pdf",
               }}

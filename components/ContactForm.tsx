@@ -118,7 +118,7 @@ export default function ContactForm({
           </p>
           <button
             type="button"
-            className="ux:mt-3 ux:px-5 ux:py-2.5 ux:rounded-lg ux:bg-slate-100 ux:text-slate-800 ux:text-sm ux:font-semibold ux:cursor-pointer ux:border-none ux:transition-colors hover:ux:bg-slate-200"
+            className="ux:mt-4 ux:px-5 ux:py-2.5 ux:rounded-xl ux:bg-white ux:text-slate-900 ux:text-xs ux:font-bold ux:cursor-pointer ux:border ux:border-slate-200 ux:shadow-sm ux:transition-all hover:ux:bg-slate-50"
             onClick={() => {
               setSubmitted(false);
               setValues({});
@@ -185,7 +185,7 @@ export default function ContactForm({
 
         <button
           type="button"
-          className="ux:w-full ux:py-3 ux:rounded-xl ux:border-none ux:text-sm ux:font-semibold ux:cursor-pointer ux:transition-colors ux:bg-slate-900 ux:text-white ux:mt-1 hover:ux:bg-slate-800"
+          className="ux:w-full ux:py-3 ux:rounded-xl ux:border-none ux:text-sm ux:font-bold ux:cursor-pointer ux:transition-all ux:bg-slate-900 ux:text-white ux:mt-1 ux:shadow-sm hover:ux:bg-slate-700 active:ux:scale-[0.98]"
           onClick={handleSubmit}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}

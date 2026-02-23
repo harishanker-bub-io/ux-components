@@ -91,7 +91,7 @@ export default function PricingTable({
             <div className="ux:flex ux:items-center ux:gap-3 ux:bg-slate-50 ux:p-1.5 ux:rounded-2xl ux:border ux:border-slate-100">
               <button
                 onClick={() => setIsYearly(false)}
-                className={`ux:px-4 ux:py-2 ux:rounded-xl ux:text-xs ux:font-bold ux:transition-all ux:cursor-pointer ${
+                className={`ux:px-4 ux:py-2 ux:rounded-xl ux:text-xs ux:font-bold ux:transition-all ux:cursor-pointer active:ux:scale-[0.98] ${
                   !isYearly
                     ? "ux:bg-white ux:text-slate-900 ux:shadow-sm"
                     : "ux:text-slate-400 hover:ux:text-slate-600"
@@ -102,7 +102,7 @@ export default function PricingTable({
               <div className="ux:relative ux:flex ux:items-center ux:gap-2">
                 <button
                   onClick={() => setIsYearly(true)}
-                  className={`ux:px-4 ux:py-2 ux:rounded-xl ux:text-xs ux:font-bold ux:transition-all ux:cursor-pointer ${
+                  className={`ux:px-4 ux:py-2 ux:rounded-xl ux:text-xs ux:font-bold ux:transition-all ux:cursor-pointer active:ux:scale-[0.98] ${
                     isYearly
                       ? "ux:bg-white ux:text-slate-900 ux:shadow-sm"
                       : "ux:text-slate-400 hover:ux:text-slate-600"
@@ -173,10 +173,10 @@ export default function PricingTable({
             <div>
               <button
                 onClick={() => handleSelect(plan)}
-                className={`ux:w-full ux:py-2.5 ux:px-6 ux:rounded-xl ux:font-semibold ux:text-sm ux:transition-all ux:cursor-pointer ${
+                className={`ux:w-full ux:py-3 ux:px-6 ux:rounded-xl ux:font-bold ux:text-sm ux:transition-all ux:cursor-pointer ux:shadow-sm active:ux:scale-[0.98] ${
                   plan.isMostPopular
                     ? "ux:bg-slate-900 ux:text-white hover:ux:bg-slate-700"
-                    : "ux:bg-slate-50 ux:text-slate-900 ux:border ux:border-slate-200 hover:ux:bg-slate-100 hover:ux:border-slate-300"
+                    : "ux:bg-white ux:text-slate-900 ux:border ux:border-slate-200 hover:ux:bg-slate-50 hover:ux:border-slate-300"
                 }`}
               >
                 {plan.buttonText || "Get Started"}

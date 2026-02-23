@@ -158,7 +158,7 @@ export default function Map({
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleDirections}
-            className="ux:shrink-0 ux:flex ux:items-center ux:gap-1.5 ux:text-xs ux:font-semibold ux:text-slate-700 ux:bg-white ux:border ux:border-slate-200 ux:px-3 ux:py-1.5 ux:rounded-lg hover:ux:bg-slate-50 hover:ux:border-slate-300 ux:transition-all"
+            className="ux:shrink-0 ux:flex ux:items-center ux:gap-1.5 ux:text-xs ux:font-bold ux:text-slate-900 ux:bg-white ux:border ux:border-slate-200 ux:px-4 ux:py-2 ux:rounded-xl ux:shadow-sm hover:ux:bg-slate-50 hover:ux:border-slate-300 ux:transition-all active:ux:scale-[0.98]"
           >
             <svg className="ux:w-3.5 ux:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
