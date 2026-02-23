@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import ContactForm from "@/components/ContactForm";
 import Carousel from "@/components/Carousel";
 import Media from "@/components/Media";
 import Pricing from "@/components/Pricing";
+import Gallery, { type GalleryItem } from "@/components/Gallery";
 import Map from "@/components/Map";
 import Faqs from "@/components/Faqs";
 import Locations from "@/components/Locations";
-import Testimonial, { type TestimonialItem } from "@/components/Testimonial";
+import Testimonial from "@/components/Testimonial";
 import Tabs from "@/components/Tabs";
 
 type DispatchEvent = {
@@ -39,62 +40,6 @@ export default function Home() {
   const [activeId, setActiveId] = useState("contact-form");
   const [activeVariantId, setActiveVariantId] = useState<string | null>(null);
   const [lastEvent, setLastEvent] = useState<DispatchEvent | null>(null);
-  const testimonialItems: TestimonialItem[] = [
-    {
-      id: "t1",
-      title: "Excellent onboarding experience",
-      description:
-        "The setup process was smooth, and the support team answered every question quickly.",
-      name: "Sarah Lee",
-      location: "Austin, TX",
-      rating: 5,
-    },
-    {
-      id: "t2",
-      title: "Fast delivery and clean UX",
-      description:
-        "We saw a clear reduction in support tickets after launch. The flow is much easier for users.",
-      name: "David Kim",
-      location: "Seattle, WA",
-      rating: 4,
-    },
-    {
-      id: "t3",
-      title: "Reliable for production",
-      description:
-        "Stable performance, clear documentation, and no surprises during deployment.",
-      name: "Priya Nair",
-      location: "San Jose, CA",
-      rating: 5,
-    },
-    {
-      id: "t4",
-      title: "Strong support and quick fixes",
-      description:
-        "Whenever we had an issue, the team responded quickly and resolved it without delay.",
-      name: "Michael Brown",
-      location: "Denver, CO",
-      rating: 4,
-    },
-    {
-      id: "t5",
-      title: "Easy to integrate",
-      description:
-        "The component API was straightforward, and integration took less than a day.",
-      name: "Ananya Patel",
-      location: "Chicago, IL",
-      rating: 5,
-    },
-    {
-      id: "t6",
-      title: "Great performance at scale",
-      description:
-        "We rolled this out to thousands of users and it remained fast and stable.",
-      name: "Ethan Clark",
-      location: "New York, NY",
-      rating: 5,
-    },
-  ];
 
   const COMPONENTS: ComponentEntry[] = [
     {
@@ -460,7 +405,62 @@ export default function Home() {
         <Testimonial
           title="Testimonials"
           subtitle="Hear what our customers have to say."
-          items={testimonialItems}
+          items={[
+            {
+              id: "t1",
+              title: "Excellent onboarding experience",
+              description:
+                "The setup process was smooth, and the support team answered every question quickly.",
+              name: "Sarah Lee",
+              location: "Austin, TX",
+              rating: 5,
+            },
+            {
+              id: "t2",
+              title: "Fast delivery and clean UX",
+              description:
+                "We saw a clear reduction in support tickets after launch. The flow is much easier for users.",
+              name: "David Kim",
+              location: "Seattle, WA",
+              rating: 4,
+            },
+            {
+              id: "t3",
+              title: "Reliable for production",
+              description:
+                "Stable performance, clear documentation, and no surprises during deployment.",
+              name: "Priya Nair",
+              location: "San Jose, CA",
+              rating: 5,
+            },
+            {
+              id: "t4",
+              title: "Strong support and quick fixes",
+              description:
+                "Whenever we had an issue, the team responded quickly and resolved it without delay.",
+              name: "Michael Brown",
+              location: "Denver, CO",
+              rating: 4,
+            },
+            {
+              id: "t5",
+              title: "Easy to integrate",
+              description:
+                "The component API was straightforward, and integration took less than a day.",
+              name: "Ananya Patel",
+              location: "Chicago, IL",
+              rating: 5,
+            },
+            {
+              id: "t6",
+              title: "Great performance at scale",
+              description:
+                "We rolled this out to thousands of users and it remained fast and stable.",
+              name: "Ethan Clark",
+              location: "New York, NY",
+              rating: 5,
+            },
+          ]}
           minCards="1" // Optional: minimum cards to keep
           maxCards="6" // Optional: cannot exceed total items provided
           mode="carousel"
@@ -534,6 +534,75 @@ export default function Home() {
               ctaLabel: "View integrations",
             },
           ]}
+          dispatch={dispatch}
+        />
+      ),
+    },
+     {
+      id: "gallery",
+      name: "Gallery",
+      icon: "🗂️",
+      component: (dispatch) => (
+        <Gallery
+          title="Project Gallery"
+          subtitle="Gallery items are provided from app/page.tsx"
+          items={[
+            {
+              id: "g1",
+              url: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=1200&h=900&fit=crop",
+              title: "Modern Architecture",
+              subheading: "Downtown City",
+              alt: "Modern building exterior",
+              type: "image",
+              customFields: [
+                { name: "Category", value: "Architecture", icon: "🏙️" },
+                { name: "Light", value: "Golden hour", icon: "🌇" },
+              ],
+            },
+            {
+              id: "g2",
+              url: "https://images.unsplash.com/photo-1682687221038-404cb8830901?w=1200&h=900&fit=crop",
+              title: "Mountain Landscape",
+              subheading: "Alpine Region",
+              alt: "Mountain and clouds",
+              type: "image",
+              customFields: [
+                { name: "Category", value: "Nature", icon: "🏔️" },
+                { name: "Weather", value: "Clear skies", icon: "☀️" },
+              ],
+            },
+            {
+              id: "g3",
+              url: "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=1200&h=900&fit=crop",
+              title: "Ocean Sunset",
+              subheading: "West Coast",
+              alt: "Sunset over ocean waves",
+              type: "image",
+              customFields: [
+                { name: "Category", value: "Seascape", icon: "🌊" },
+                { name: "Mood", value: "Calm", icon: "🧘" },
+              ],
+            },
+            {
+              id: "g4",
+              url: "https://images.unsplash.com/photo-1682687220801-eef408f95d71?w=1200&h=900&fit=crop",
+              title: "Forest Trail",
+              subheading: "National Park",
+              alt: "Trail through forest",
+              type: "image",
+              customFields: [
+                { name: "Category", value: "Travel", icon: "🥾" },
+                { name: "Season", value: "Spring", icon: "🌿" },
+              ],
+            },
+          ]}
+          columns={3}
+          minCards={1}
+          maxCards={6}
+          openModal={true}
+          aspectRatio="square"
+          layout="grid"
+          showMeta={true}
           dispatch={dispatch}
         />
       ),
@@ -921,9 +990,9 @@ export default function Home() {
   const activeVariant =
     activeComponent?.variants?.find((v) => v.id === activeVariantId) ??
     activeComponent?.variants?.[0];
-  const handleDispatch: DispatchFn = (eventName, payload) => {
+  const handleDispatch: DispatchFn = useCallback((eventName, payload) => {
     setLastEvent({ eventName, payload });
-  };
+  }, []);
 
   return (
     <main className="ux:min-h-screen ux:flex ux:bg-white ux:overflow-hidden">
