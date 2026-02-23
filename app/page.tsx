@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import ContactForm from "@/components/ContactForm";
 import Carousel from "@/components/Carousel";
+import Media from "@/components/Media";
 import PricingTable from "@/components/PricingTable";
 import Map from "@/components/Map";
 import Faqs from "@/components/Faqs";
@@ -253,6 +254,150 @@ export default function Home() {
           dispatch={dispatch}
         />
       ),
+    },
+    {
+      id: "media",
+      name: "Media",
+      icon: "🎬",
+      variants: [
+        {
+          id: "media-image",
+          label: "Image",
+          component: (dispatch: any) => (
+            <Media
+              title="Image Preview"
+              subtitle="Responsive image with fullscreen support."
+              media={{
+                src: "https://images.unsplash.com/photo-1482192505345-5655af888cc4?w=1400&h=900&fit=crop",
+                alt: "Modern workspace with large windows",
+              }}
+              aspectRatio="16/9"
+              allowFullscreen={true}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "media-video",
+          label: "Video",
+          component: (dispatch: any) => (
+            <Media
+              title="Video Preview"
+              subtitle="HTML5 video with playback events."
+              media={{
+                src: "https://www.w3schools.com/html/mov_bbb.mp4",
+                alt: "Sample video",
+                thumbnail: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=1400&h=900&fit=crop",
+                transcriptSrc: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+              }}
+              aspectRatio="16/9"
+              controls={true}
+              allowFullscreen={true}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "media-youtube",
+          label: "YouTube",
+          component: (dispatch: any) => (
+            <Media
+              title="YouTube Embed"
+              subtitle="Privacy-enhanced regular YouTube embed."
+              media={{
+                src: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
+                alt: "YouTube demo video",
+              }}
+              youtubePrivacyMode={true}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "media-shorts",
+          label: "YouTube Shorts",
+          component: (dispatch: any) => (
+            <Media
+              title="YouTube Shorts"
+              subtitle="Short-form vertical embed with 9:16 aspect ratio."
+              media={{
+                src: "https://www.youtube.com/shorts/aqz-KE-bpKQ",
+                alt: "YouTube shorts demo",
+              }}
+              youtubePrivacyMode={true}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "media-pdf-inline",
+          label: "PDF Inline",
+          component: (dispatch: any) => (
+            <Media
+              title="PDF Inline Preview"
+              subtitle="Inline PDF rendering with fallback actions."
+              media={{
+                src: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                alt: "Dummy PDF",
+                downloadName: "dummy.pdf",
+              }}
+              height={520}
+              openPdfInNewTab={false}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "media-pdf-tab",
+          label: "PDF New Tab",
+          component: (dispatch: any) => (
+            <Media
+              title="PDF External Flow"
+              subtitle="Render as action card that opens PDF in a new tab."
+              media={{
+                src: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                alt: "Dummy PDF",
+                downloadName: "dummy.pdf",
+              }}
+              openPdfInNewTab={true}
+              height={380}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "media-audio",
+          label: "Audio",
+          component: (dispatch: any) => (
+            <Media
+              title="Audio Playback"
+              subtitle="Native audio control surface with playback events."
+              media={{
+                src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                alt: "Sample audio",
+                transcriptSrc: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+              }}
+              height={220}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "media-unsupported",
+          label: "Unsupported",
+          component: (dispatch: any) => (
+            <Media
+              title="Unsupported Media"
+              subtitle="Graceful fallback when media type is not supported."
+              media={{
+                src: "https://example.com/file.unknown-extension",
+                alt: "Unsupported source",
+              }}
+              dispatch={dispatch}
+            />
+          ),
+        },
+      ],
     },
     {
       id: "faqs",
@@ -532,6 +677,26 @@ export default function Home() {
       <div className="ux:flex-1 ux:flex ux:flex-col ux:overflow-hidden lg:ux:flex-row">
         <div className="ux:flex-1 ux:overflow-y-auto ux:p-8 lg:ux:p-12">
           <div className="ux:max-w-7xl ux:mx-auto ux:space-y-8">
+            {/* Variant tabs — only shown when the active component has variants */}
+            {activeComponent?.variants && (
+              <div className="ux:flex ux:items-center ux:gap-1 ux:bg-slate-100 ux:rounded-xl ux:p-1 ux:self-start ux:w-fit">
+                {activeComponent.variants.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setActiveVariantId(v.id)}
+                    className={cn(
+                      "ux:px-4 ux:py-2 ux:rounded-lg ux:text-xs ux:font-semibold ux:transition-all ux:cursor-pointer",
+                      (activeVariant?.id === v.id)
+                        ? "ux:bg-white ux:text-slate-900 ux:shadow-sm"
+                        : "ux:text-slate-400 hover:ux:text-slate-600"
+                    )}
+                  >
+                    {v.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="ux:p-1 ux:min-h-[500px] ux:flex ux:items-start ux:justify-center">
               {activeVariant
                 ? activeVariant.component(handleDispatch)
