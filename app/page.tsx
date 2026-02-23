@@ -24,8 +24,8 @@ export default function Home() {
       icon: "📝",
       component: (dispatch: any) => (
         <ContactForm
-          title="Contact Sales"
-          subtitle="Tell us what you need and we will get back shortly."
+          title="Book a VR Tour"
+          subtitle="Book a VR tour of the property with us today."
           submitText="Submit"
           fields={[
             { label: "Name", required: true },

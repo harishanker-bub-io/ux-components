@@ -118,11 +118,11 @@ export default function PricingTable({
         </div>
       </div>
 
-      {/* Horizontal Layout: Cards side-by-side */}
+      {/* Horizontal Layout: Cards side-by-side, collapses to stacked on small screens */}
       {currentLayout === "horizontal" && (
         <div
           className="ux:grid ux:gap-6 ux:items-stretch"
-          style={{ gridTemplateColumns: `repeat(${plans.length}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))" }}
         >
           {plans.map((plan) => (
             <div

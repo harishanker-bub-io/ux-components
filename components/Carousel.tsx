@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 // import "@500ux/components/styles/base.css"; This will be used in the production dont remove keep in all components
 
 export const version = "1.0.0";
@@ -35,8 +35,34 @@ export default function Carousel({
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const maxIndex = Math.max(0, images.length - visibleCount);
+  // Responsive visible count: 1 on mobile, 2 on tablet, full on desktop
+  const effectiveVisibleCount =
+    windowWidth === 0
+      ? visibleCount
+      : windowWidth < 640
+      ? 1
+      : windowWidth < 1024
+      ? Math.min(2, visibleCount)
+      : visibleCount;
+
+  const maxIndex = Math.max(0, images.length - effectiveVisibleCount);
+
+  // Track window width
+  useEffect(() => {
+    const update = () => setWindowWidth(window.innerWidth);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  // Reset index when effective count changes to avoid out-of-bounds
+  useEffect(() => {
+    setCurrentIndex((prev) => Math.min(prev, maxIndex));
+  }, [maxIndex]);
 
   const goToPrevious = useCallback(() => {
     setCurrentIndex((prev) => Math.max(0, prev - 1));
@@ -51,6 +77,7 @@ export default function Carousel({
   const openModal = useCallback(
     (index: number) => {
       setSelectedImage(index);
+      setZoomLevel(1);
       dispatch?.("image_opened", { index, image: images[index] });
     },
     [images, dispatch]
@@ -58,6 +85,7 @@ export default function Carousel({
 
   const closeModal = useCallback(() => {
     setSelectedImage(null);
+    setZoomLevel(1);
     dispatch?.("modal_closed", {});
   }, [dispatch]);
 
@@ -108,6 +136,12 @@ export default function Carousel({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedImage, images.length, closeModal]);
 
+  useEffect(() => {
+    if (selectedImage !== null) {
+      setZoomLevel(1);
+    }
+  }, [selectedImage]);
+
   if (!images || images.length === 0) {
     return (
       <div className="ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:p-8 ux:shadow-sm">
@@ -119,16 +153,16 @@ export default function Carousel({
   return (
     <>
       <div className="ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:shadow-sm ux:overflow-hidden">
-        <div className="ux:relative ux:px-12 ux:py-8">
+        <div className="ux:relative ux:px-10 ux:py-6 sm:ux:px-12 sm:ux:py-8">
           {/* Previous Button */}
           <button
             onClick={goToPrevious}
             disabled={currentIndex === 0}
-            className="ux:absolute ux:left-2 ux:top-1/2 ux:-translate-y-1/2 ux:z-10 ux:w-10 ux:h-10 ux:rounded-full ux:bg-white ux:border ux:border-slate-200 ux:shadow-md ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-slate-50 hover:ux:scale-110"
+            className="ux:absolute ux:left-1.5 sm:ux:left-2 ux:top-1/2 ux:-translate-y-1/2 ux:z-10 ux:w-8 ux:h-8 sm:ux:w-10 sm:ux:h-10 ux:rounded-full ux:bg-white ux:border ux:border-slate-200 ux:shadow-md ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-slate-50 hover:ux:scale-110"
             aria-label="Previous"
           >
             <svg
-              className="ux:w-5 ux:h-5 ux:text-slate-700"
+              className="ux:w-4 ux:h-4 sm:ux:w-5 sm:ux:h-5 ux:text-slate-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -139,22 +173,27 @@ export default function Carousel({
 
           {/* Image Track */}
           <div
+            ref={containerRef}
             className="ux:overflow-hidden"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
             <div
-              className="ux:flex ux:gap-4 ux:transition-transform ux:duration-500 ux:ease-out"
+              className="ux:flex ux:gap-3 sm:ux:gap-4 ux:transition-transform ux:duration-500 ux:ease-out"
               style={{
-                transform: `translateX(-${currentIndex * (100 / visibleCount)}%)`,
+                transform: `translateX(-${currentIndex * (100 / effectiveVisibleCount)}%)`,
               }}
             >
               {images.map((image, idx) => (
                 <div
                   key={idx}
                   className="ux:flex-shrink-0 ux:cursor-pointer ux:group"
-                  style={{ width: `calc(${100 / visibleCount}% - ${(visibleCount - 1) * 16 / visibleCount}px)` }}
+                  style={{
+                    width: `calc(${100 / effectiveVisibleCount}% - ${
+                      ((effectiveVisibleCount - 1) * (effectiveVisibleCount > 1 ? 12 : 0)) / effectiveVisibleCount
+                    }px)`,
+                  }}
                   onClick={() => openModal(idx)}
                 >
                   <div className="ux:relative ux:aspect-[4/3] ux:rounded-xl ux:overflow-hidden ux:bg-slate-100 ux:border ux:border-slate-200 ux:transition-all group-hover:ux:shadow-lg group-hover:ux:scale-[1.02]">
@@ -163,9 +202,10 @@ export default function Carousel({
                       alt={image.alt || `Image ${idx + 1}`}
                       className="ux:w-full ux:h-full ux:object-cover"
                     />
-                    <div className="ux:absolute ux:inset-0 ux:bg-gradient-to-t ux:from-black/60 ux:via-transparent ux:to-transparent ux:opacity-0 group-hover:ux:opacity-100 ux:transition-opacity ux:flex ux:items-end ux:p-4">
+                    {/* Caption overlay — always visible on mobile, hover on desktop */}
+                    <div className={`ux:absolute ux:inset-0 ux:bg-gradient-to-t ux:from-black/60 ux:via-transparent ux:to-transparent ux:flex ux:items-end ux:p-3 sm:ux:p-4 ux:transition-opacity ${effectiveVisibleCount === 1 ? "ux:opacity-100" : "ux:opacity-0 group-hover:ux:opacity-100"}`}>
                       {image.caption && (
-                        <p className="ux:text-white ux:text-sm ux:font-medium">{image.caption}</p>
+                        <p className="ux:text-white ux:text-xs sm:ux:text-sm ux:font-medium ux:leading-snug">{image.caption}</p>
                       )}
                     </div>
                   </div>
@@ -178,11 +218,11 @@ export default function Carousel({
           <button
             onClick={goToNext}
             disabled={currentIndex >= maxIndex}
-            className="ux:absolute ux:right-2 ux:top-1/2 ux:-translate-y-1/2 ux:z-10 ux:w-10 ux:h-10 ux:rounded-full ux:bg-white ux:border ux:border-slate-200 ux:shadow-md ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-slate-50 hover:ux:scale-110"
+            className="ux:absolute ux:right-1.5 sm:ux:right-2 ux:top-1/2 ux:-translate-y-1/2 ux:z-10 ux:w-8 ux:h-8 sm:ux:w-10 sm:ux:h-10 ux:rounded-full ux:bg-white ux:border ux:border-slate-200 ux:shadow-md ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-slate-50 hover:ux:scale-110"
             aria-label="Next"
           >
             <svg
-              className="ux:w-5 ux:h-5 ux:text-slate-700"
+              className="ux:w-4 ux:h-4 sm:ux:w-5 sm:ux:h-5 ux:text-slate-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -193,16 +233,16 @@ export default function Carousel({
         </div>
 
         {/* Indicators */}
-        {images.length > visibleCount && (
-          <div className="ux:flex ux:justify-center ux:gap-2 ux:pb-6">
+        {images.length > effectiveVisibleCount && (
+          <div className="ux:flex ux:justify-center ux:gap-2 ux:pb-5">
             {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
-                className={`ux:w-2 ux:h-2 ux:rounded-full ux:transition-all ux:cursor-pointer ${
+                className={`ux:h-2 ux:rounded-full ux:transition-all ux:cursor-pointer ${
                   idx === currentIndex
                     ? "ux:w-6 ux:bg-slate-900"
-                    : "ux:bg-slate-300 hover:ux:bg-slate-400"
+                    : "ux:w-2 ux:bg-slate-300 hover:ux:bg-slate-400"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
@@ -219,7 +259,7 @@ export default function Carousel({
         >
           <button
             onClick={closeModal}
-            className="ux:absolute ux:top-4 ux:right-4 ux:w-10 ux:h-10 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
+            className="ux:absolute ux:top-4 ux:right-4 ux:z-30 ux:w-10 ux:h-10 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
             aria-label="Close"
           >
             <svg
@@ -232,13 +272,39 @@ export default function Carousel({
             </svg>
           </button>
 
+          {/* Zoom Controls */}
+          <div
+            className="ux:absolute ux:top-4 ux:right-16 sm:ux:right-20 ux:z-30 ux:flex ux:items-center ux:gap-2 ux:bg-black/50 ux:backdrop-blur-sm ux:px-2 ux:py-2 ux:rounded-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setZoomLevel((prev) => Math.max(1, Number((prev - 0.25).toFixed(2))))}
+              disabled={zoomLevel <= 1}
+              className="ux:w-9 ux:h-9 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:text-white ux:text-xl ux:leading-none ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-white/20"
+              aria-label="Zoom out"
+            >
+              -
+            </button>
+            <span className="ux:text-white ux:text-xs ux:font-semibold ux:min-w-[48px] ux:text-center">
+              {Math.round(zoomLevel * 100)}%
+            </span>
+            <button
+              onClick={() => setZoomLevel((prev) => Math.min(3, Number((prev + 0.25).toFixed(2))))}
+              disabled={zoomLevel >= 3}
+              className="ux:w-9 ux:h-9 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:text-white ux:text-xl ux:leading-none ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-white/20"
+              aria-label="Zoom in"
+            >
+              +
+            </button>
+          </div>
+
           {/* Previous Modal Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               setSelectedImage((prev) => (prev! > 0 ? prev! - 1 : images.length - 1));
             }}
-            className="ux:absolute ux:left-4 ux:w-12 ux:h-12 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
+            className="ux:absolute ux:left-4 ux:z-30 ux:w-12 ux:h-12 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
             aria-label="Previous image"
           >
             <svg
@@ -253,13 +319,14 @@ export default function Carousel({
 
           {/* Image */}
           <div
-            className="ux:max-w-5xl ux:max-h-[90vh] ux:relative"
+            className="ux:max-w-5xl ux:max-h-[90vh] ux:relative ux:z-10"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={images[selectedImage].src}
               alt={images[selectedImage].alt || `Image ${selectedImage + 1}`}
-              className="ux:max-w-full ux:max-h-[90vh] ux:object-contain ux:rounded-lg"
+              className="ux:max-w-full ux:max-h-[90vh] ux:object-contain ux:rounded-lg ux:transition-transform ux:duration-200"
+              style={{ transform: `scale(${zoomLevel})` }}
             />
             {images[selectedImage].caption && (
               <div className="ux:absolute ux:bottom-0 ux:left-0 ux:right-0 ux:bg-black/60 ux:backdrop-blur-sm ux:p-4 ux:rounded-b-lg">
@@ -276,7 +343,7 @@ export default function Carousel({
               e.stopPropagation();
               setSelectedImage((prev) => (prev! < images.length - 1 ? prev! + 1 : 0));
             }}
-            className="ux:absolute ux:right-4 ux:w-12 ux:h-12 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
+            className="ux:absolute ux:right-4 ux:z-30 ux:w-12 ux:h-12 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
             aria-label="Next image"
           >
             <svg
@@ -290,7 +357,7 @@ export default function Carousel({
           </button>
 
           {/* Image Counter */}
-          <div className="ux:absolute ux:bottom-4 ux:left-1/2 ux:-translate-x-1/2 ux:bg-black/60 ux:backdrop-blur-sm ux:px-4 ux:py-2 ux:rounded-full">
+          <div className="ux:absolute ux:bottom-4 ux:left-1/2 ux:-translate-x-1/2 ux:z-30 ux:bg-black/60 ux:backdrop-blur-sm ux:px-4 ux:py-2 ux:rounded-full">
             <p className="ux:text-white ux:text-sm ux:font-medium">
               {selectedImage + 1} / {images.length}
             </p>
