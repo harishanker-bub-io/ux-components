@@ -263,7 +263,7 @@ export default function Home() {
         {
           id: "media-image",
           label: "Image",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Media
               title="Image Preview"
               subtitle="Responsive image with fullscreen support."
@@ -280,7 +280,7 @@ export default function Home() {
         {
           id: "media-video",
           label: "Video",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Media
               title="Video Preview"
               subtitle="HTML5 video with playback events."
@@ -300,12 +300,12 @@ export default function Home() {
         {
           id: "media-youtube",
           label: "YouTube",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Media
               title="YouTube Embed"
               subtitle="Privacy-enhanced regular YouTube embed."
               media={{
-                src: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
+                src: "https://www.youtube.com/watch?v=9xwazD5SyVg",
                 alt: "YouTube demo video",
               }}
               youtubePrivacyMode={true}
@@ -316,12 +316,12 @@ export default function Home() {
         {
           id: "media-shorts",
           label: "YouTube Shorts",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Media
               title="YouTube Shorts"
               subtitle="Short-form vertical embed with 9:16 aspect ratio."
               media={{
-                src: "https://www.youtube.com/shorts/aqz-KE-bpKQ",
+                src: "https://www.youtube.com/shorts/OOfrMa9Qbwk",
                 alt: "YouTube shorts demo",
               }}
               youtubePrivacyMode={true}
@@ -332,12 +332,12 @@ export default function Home() {
         {
           id: "media-pdf-inline",
           label: "PDF Inline",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Media
               title="PDF Inline Preview"
               subtitle="Inline PDF rendering with fallback actions."
               media={{
-                src: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                src: "https://www.orimi.com/pdf-test.pdf",
                 alt: "Dummy PDF",
                 downloadName: "dummy.pdf",
               }}
@@ -350,7 +350,7 @@ export default function Home() {
         {
           id: "media-pdf-tab",
           label: "PDF New Tab",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Media
               title="PDF External Flow"
               subtitle="Render as action card that opens PDF in a new tab."
@@ -368,7 +368,7 @@ export default function Home() {
         {
           id: "media-audio",
           label: "Audio",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Media
               title="Audio Playback"
               subtitle="Native audio control surface with playback events."
@@ -385,7 +385,7 @@ export default function Home() {
         {
           id: "media-unsupported",
           label: "Unsupported",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Media
               title="Unsupported Media"
               subtitle="Graceful fallback when media type is not supported."
@@ -504,7 +504,7 @@ export default function Home() {
         {
           id: "locations-full",
           label: "With images",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Locations
               title="Our Offices"
               subtitle="Find a T-Hub location near you."
@@ -553,7 +553,7 @@ export default function Home() {
         {
           id: "locations-no-images",
           label: "No images",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Locations
               title="Our Offices"
               subtitle="Find a T-Hub location near you."
@@ -596,7 +596,7 @@ export default function Home() {
         {
           id: "locations-single",
           label: "Single card",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Locations
               title="HQ"
               subtitle="Our Headquarters"
@@ -621,7 +621,7 @@ export default function Home() {
         {
           id: "locations-empty",
           label: "Empty state",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Locations
               title="Our Offices"
               locations={[]}
