@@ -5,7 +5,7 @@ import ContactForm from "@/components/ContactForm";
 import Carousel from "@/components/Carousel";
 import Media from "@/components/Media";
 import Pricing from "@/components/Pricing";
-import Gallery, { type GalleryItem } from "@/components/Gallery";
+import Gallery from "@/components/Gallery";
 import Map from "@/components/Map";
 import Faqs from "@/components/Faqs";
 import Locations from "@/components/Locations";
