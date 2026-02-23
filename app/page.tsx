@@ -433,7 +433,7 @@ export default function Home() {
       <div className="ux:flex-1 ux:flex ux:flex-col ux:overflow-hidden lg:ux:flex-row">
         <div className="ux:flex-1 ux:overflow-y-auto ux:p-8 lg:ux:p-12">
           <div className="ux:max-w-7xl ux:mx-auto ux:space-y-8">
-            <div className="ux:space-y-1">
+            <div className="ux:space-y-1 ux:hidden">
               <h2 className="ux:text-2xl ux:font-bold ux:text-slate-900">
                 {activeComponent?.name}
               </h2>
