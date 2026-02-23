@@ -9,6 +9,7 @@ import Map from "@/components/Map";
 import Faqs from "@/components/Faqs";
 import Locations from "@/components/Locations";
 import Testimonial, { type TestimonialItem } from "@/components/Testimonial";
+import Tabs from "@/components/Tabs";
 
 type DispatchEvent = {
   eventName: string;
@@ -477,6 +478,62 @@ export default function Home() {
           fontFamily="inherit"
           radius="xl"
           shadow="sm"
+          dispatch={dispatch}
+        />
+      ),
+    },
+    {
+      id: "tabs",
+      name: "Tabs",
+      icon: "🗂️",
+      component: (dispatch) => (
+        <Tabs
+          title="Platform Overview"
+          subtitle="Switch tabs to explore product capabilities."
+          tabs={[
+            {
+              id: "assistant",
+              label: "AI Assistant",
+              icon: "🤖",
+              heading: "AI Assistant",
+              description:
+                "Deploy a branded AI assistant across web and app surfaces with secure runtime controls.",
+              bullets: [
+                "Embeddable widget with Shadow DOM isolation",
+                "Custom tone, persona, and memory settings",
+                "Built-in fallback and escalation flows",
+              ],
+              ctaLabel: "Configure assistant",
+            },
+            {
+              id: "analytics",
+              label: "Analytics",
+              icon: "📈",
+              heading: "Analytics & Insights",
+              description:
+                "Track quality, containment, and conversion metrics with actionable event-level telemetry.",
+              bullets: [
+                "Conversation funnels and drop-off analysis",
+                "Intent detection and CSAT trend tracking",
+                "Export-ready reports for stakeholders",
+              ],
+              ctaLabel: "Open analytics",
+            },
+            {
+              id: "integrations",
+              label: "Integrations",
+              icon: "🔌",
+              heading: "Integrations",
+              description:
+                "Connect your stack to keep customer context and actions synchronized in real time.",
+              bullets: [
+                "CRM sync for leads and lifecycle stages",
+                "Ticketing handoff with transcript context",
+                "Webhook-based custom event automations",
+              ],
+              ctaLabel: "View integrations",
+            },
+          ]}
           dispatch={dispatch}
         />
       ),
