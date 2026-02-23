@@ -108,11 +108,14 @@ export default function Home() {
         <PricingTable
           title="Flexible Plans"
           subtitle="Choose the perfect plan for your business needs."
+          showBillingToggle={true}
+          yearlyDiscountText="Save 20%"
           plans={[
             {
               id: "starter",
               name: "Starter",
               price: "0",
+              yearlyPrice: "0",
               description: "For individuals and small projects.",
               features: [
                 "Up to 3 projects",
@@ -127,6 +130,8 @@ export default function Home() {
               name: "Pro",
               price: "49",
               period: "/mo",
+              yearlyPrice: "470",
+              yearlyPeriod: "/yr",
               isMostPopular: true,
               description: "Standard plan for growing teams.",
               features: [
@@ -143,6 +148,8 @@ export default function Home() {
               name: "Enterprise",
               price: "99",
               period: "/mo",
+              yearlyPrice: "990",
+              yearlyPeriod: "/yr",
               description: "Scale your business with ease.",
               features: [
                 "Everything in Pro",
@@ -433,15 +440,6 @@ export default function Home() {
       <div className="ux:flex-1 ux:flex ux:flex-col ux:overflow-hidden lg:ux:flex-row">
         <div className="ux:flex-1 ux:overflow-y-auto ux:p-8 lg:ux:p-12">
           <div className="ux:max-w-7xl ux:mx-auto ux:space-y-8">
-            <div className="ux:space-y-1 ux:hidden">
-              <h2 className="ux:text-2xl ux:font-bold ux:text-slate-900">
-                {activeComponent?.name}
-              </h2>
-              <p className="ux:text-sm ux:text-slate-500">
-                Previewing component in isolation with live event tracking.
-              </p>
-            </div>
-
             {/* Variant tabs — only shown when the active component has variants */}
             {activeComponent?.variants && (
               <div className="ux:flex ux:items-center ux:gap-1 ux:bg-slate-100 ux:rounded-xl ux:p-1 ux:self-start ux:w-fit">
