@@ -39,17 +39,22 @@ export default function Carousel({
   const [zoomLevel, setZoomLevel] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const safeVisibleCount = Math.max(1, visibleCount);
+
   // Responsive visible count: 1 on mobile, 2 on tablet, full on desktop
   const effectiveVisibleCount =
     windowWidth === 0
-      ? visibleCount
+      ? safeVisibleCount
       : windowWidth < 640
       ? 1
       : windowWidth < 1024
-      ? Math.min(2, visibleCount)
-      : visibleCount;
+      ? Math.min(2, safeVisibleCount)
+      : safeVisibleCount;
 
-  const maxIndex = Math.max(0, images.length - effectiveVisibleCount);
+  const visibleItemsCount = Math.max(1, Math.min(effectiveVisibleCount, images.length));
+  const maxIndex = Math.max(0, images.length - visibleItemsCount);
+  const canNavigateTrack = maxIndex > 0;
+  const hasMultipleImages = images.length > 1;
 
   // Track window width
   useEffect(() => {
@@ -65,14 +70,20 @@ export default function Carousel({
   }, [maxIndex]);
 
   const goToPrevious = useCallback(() => {
-    setCurrentIndex((prev) => Math.max(0, prev - 1));
-    dispatch?.("carousel_navigate", { direction: "previous", index: currentIndex - 1 });
-  }, [currentIndex, dispatch]);
+    if (!canNavigateTrack) return;
+    const nextIndex = Math.max(0, currentIndex - 1);
+    if (nextIndex === currentIndex) return;
+    setCurrentIndex(nextIndex);
+    dispatch?.("carousel_navigate", { direction: "previous", index: nextIndex });
+  }, [canNavigateTrack, currentIndex, dispatch]);
 
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
-    dispatch?.("carousel_navigate", { direction: "next", index: currentIndex + 1 });
-  }, [currentIndex, maxIndex, dispatch]);
+    if (!canNavigateTrack) return;
+    const nextIndex = Math.min(maxIndex, currentIndex + 1);
+    if (nextIndex === currentIndex) return;
+    setCurrentIndex(nextIndex);
+    dispatch?.("carousel_navigate", { direction: "next", index: nextIndex });
+  }, [canNavigateTrack, currentIndex, maxIndex, dispatch]);
 
   const openModal = useCallback(
     (index: number) => {
@@ -90,7 +101,9 @@ export default function Carousel({
   }, [dispatch]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
+    const start = e.targetTouches[0].clientX;
+    setTouchStart(start);
+    setTouchEnd(start);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -98,16 +111,18 @@ export default function Carousel({
   };
 
   const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 75) {
+    if (!canNavigateTrack) return;
+    const delta = touchStart - touchEnd;
+    if (delta > 75) {
       goToNext();
     }
-    if (touchStart - touchEnd < -75) {
+    if (delta < -75) {
       goToPrevious();
     }
   };
 
   useEffect(() => {
-    if (!autoplay) return;
+    if (!autoplay || !canNavigateTrack) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => {
@@ -117,7 +132,7 @@ export default function Carousel({
     }, autoplayInterval);
 
     return () => clearInterval(interval);
-  }, [autoplay, autoplayInterval, maxIndex]);
+  }, [autoplay, autoplayInterval, maxIndex, canNavigateTrack]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -125,16 +140,16 @@ export default function Carousel({
 
       if (e.key === "Escape") {
         closeModal();
-      } else if (e.key === "ArrowLeft") {
+      } else if (e.key === "ArrowLeft" && hasMultipleImages) {
         setSelectedImage((prev) => (prev! > 0 ? prev! - 1 : images.length - 1));
-      } else if (e.key === "ArrowRight") {
+      } else if (e.key === "ArrowRight" && hasMultipleImages) {
         setSelectedImage((prev) => (prev! < images.length - 1 ? prev! + 1 : 0));
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedImage, images.length, closeModal]);
+  }, [selectedImage, images.length, closeModal, hasMultipleImages]);
 
   useEffect(() => {
     if (selectedImage !== null) {
@@ -155,21 +170,22 @@ export default function Carousel({
       <div className="ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:shadow-sm ux:overflow-hidden">
         <div className="ux:relative ux:px-10 ux:py-6 sm:ux:px-12 sm:ux:py-8">
           {/* Previous Button */}
-          <button
-            onClick={goToPrevious}
-            disabled={currentIndex === 0}
-            className="ux:absolute ux:left-1.5 sm:ux:left-2 ux:top-1/2 ux:-translate-y-1/2 ux:z-10 ux:w-8 ux:h-8 sm:ux:w-10 sm:ux:h-10 ux:rounded-full ux:bg-white ux:border ux:border-slate-200 ux:shadow-md ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-slate-50 hover:ux:scale-110"
-            aria-label="Previous"
-          >
-            <svg
-              className="ux:w-4 ux:h-4 sm:ux:w-5 sm:ux:h-5 ux:text-slate-700"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {canNavigateTrack && currentIndex > 0 && (
+            <button
+              onClick={goToPrevious}
+              className="ux:absolute ux:left-1.5 sm:ux:left-2 ux:top-1/2 ux:-translate-y-1/2 ux:z-10 ux:w-8 ux:h-8 sm:ux:w-10 sm:ux:h-10 ux:rounded-full ux:bg-white ux:border ux:border-slate-200 ux:shadow-md ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-slate-50 hover:ux:scale-110"
+              aria-label="Previous"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+              <svg
+                className="ux:w-4 ux:h-4 sm:ux:w-5 sm:ux:h-5 ux:text-slate-700"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
 
           {/* Image Track */}
           <div
@@ -182,7 +198,7 @@ export default function Carousel({
             <div
               className="ux:flex ux:gap-3 sm:ux:gap-4 ux:transition-transform ux:duration-500 ux:ease-out"
               style={{
-                transform: `translateX(-${currentIndex * (100 / effectiveVisibleCount)}%)`,
+                transform: `translateX(-${currentIndex * (100 / visibleItemsCount)}%)`,
               }}
             >
               {images.map((image, idx) => (
@@ -190,8 +206,8 @@ export default function Carousel({
                   key={idx}
                   className="ux:flex-shrink-0 ux:cursor-pointer ux:group"
                   style={{
-                    width: `calc(${100 / effectiveVisibleCount}% - ${
-                      ((effectiveVisibleCount - 1) * (effectiveVisibleCount > 1 ? 12 : 0)) / effectiveVisibleCount
+                    width: `calc(${100 / visibleItemsCount}% - ${
+                      ((visibleItemsCount - 1) * (visibleItemsCount > 1 ? 12 : 0)) / visibleItemsCount
                     }px)`,
                   }}
                   onClick={() => openModal(idx)}
@@ -203,7 +219,7 @@ export default function Carousel({
                       className="ux:w-full ux:h-full ux:object-cover"
                     />
                     {/* Caption overlay — always visible on mobile, hover on desktop */}
-                    <div className={`ux:absolute ux:inset-0 ux:bg-gradient-to-t ux:from-black/60 ux:via-transparent ux:to-transparent ux:flex ux:items-end ux:p-3 sm:ux:p-4 ux:transition-opacity ${effectiveVisibleCount === 1 ? "ux:opacity-100" : "ux:opacity-0 group-hover:ux:opacity-100"}`}>
+                    <div className={`ux:absolute ux:inset-0 ux:bg-gradient-to-t ux:from-black/60 ux:via-transparent ux:to-transparent ux:flex ux:items-end ux:p-3 sm:ux:p-4 ux:transition-opacity ${visibleItemsCount === 1 ? "ux:opacity-100" : "ux:opacity-0 group-hover:ux:opacity-100"}`}>
                       {image.caption && (
                         <p className="ux:text-white ux:text-xs sm:ux:text-sm ux:font-medium ux:leading-snug">{image.caption}</p>
                       )}
@@ -215,25 +231,26 @@ export default function Carousel({
           </div>
 
           {/* Next Button */}
-          <button
-            onClick={goToNext}
-            disabled={currentIndex >= maxIndex}
-            className="ux:absolute ux:right-1.5 sm:ux:right-2 ux:top-1/2 ux:-translate-y-1/2 ux:z-10 ux:w-8 ux:h-8 sm:ux:w-10 sm:ux:h-10 ux:rounded-full ux:bg-white ux:border ux:border-slate-200 ux:shadow-md ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-slate-50 hover:ux:scale-110"
-            aria-label="Next"
-          >
-            <svg
-              className="ux:w-4 ux:h-4 sm:ux:w-5 sm:ux:h-5 ux:text-slate-700"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {canNavigateTrack && currentIndex < maxIndex && (
+            <button
+              onClick={goToNext}
+              className="ux:absolute ux:right-1.5 sm:ux:right-2 ux:top-1/2 ux:-translate-y-1/2 ux:z-10 ux:w-8 ux:h-8 sm:ux:w-10 sm:ux:h-10 ux:rounded-full ux:bg-white ux:border ux:border-slate-200 ux:shadow-md ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer disabled:ux:opacity-40 disabled:ux:cursor-not-allowed hover:ux:bg-slate-50 hover:ux:scale-110"
+              aria-label="Next"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+              <svg
+                className="ux:w-4 ux:h-4 sm:ux:w-5 sm:ux:h-5 ux:text-slate-700"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Indicators */}
-        {images.length > effectiveVisibleCount && (
+        {canNavigateTrack && (
           <div className="ux:flex ux:justify-center ux:gap-2 ux:pb-5">
             {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
               <button
@@ -298,24 +315,25 @@ export default function Carousel({
             </button>
           </div>
 
-          {/* Previous Modal Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedImage((prev) => (prev! > 0 ? prev! - 1 : images.length - 1));
-            }}
-            className="ux:absolute ux:left-4 ux:z-30 ux:w-12 ux:h-12 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
-            aria-label="Previous image"
-          >
-            <svg
-              className="ux:w-6 ux:h-6 ux:text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {hasMultipleImages && selectedImage !== null && selectedImage > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage((prev) => (prev! > 0 ? prev! - 1 : images.length - 1));
+              }}
+              className="ux:absolute ux:left-4 ux:z-30 ux:w-12 ux:h-12 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
+              aria-label="Previous image"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+              <svg
+                className="ux:w-6 ux:h-6 ux:text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
 
           {/* Image */}
           <div
@@ -337,24 +355,25 @@ export default function Carousel({
             )}
           </div>
 
-          {/* Next Modal Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedImage((prev) => (prev! < images.length - 1 ? prev! + 1 : 0));
-            }}
-            className="ux:absolute ux:right-4 ux:z-30 ux:w-12 ux:h-12 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
-            aria-label="Next image"
-          >
-            <svg
-              className="ux:w-6 ux:h-6 ux:text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {hasMultipleImages && selectedImage !== null && selectedImage < images.length - 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage((prev) => (prev! < images.length - 1 ? prev! + 1 : 0));
+              }}
+              className="ux:absolute ux:right-4 ux:z-30 ux:w-12 ux:h-12 ux:rounded-full ux:bg-white/10 ux:border ux:border-white/20 ux:flex ux:items-center ux:justify-center ux:transition-all ux:cursor-pointer hover:ux:bg-white/20"
+              aria-label="Next image"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+              <svg
+                className="ux:w-6 ux:h-6 ux:text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
 
           {/* Image Counter */}
           <div className="ux:absolute ux:bottom-4 ux:left-1/2 ux:-translate-x-1/2 ux:z-30 ux:bg-black/60 ux:backdrop-blur-sm ux:px-4 ux:py-2 ux:rounded-full">
