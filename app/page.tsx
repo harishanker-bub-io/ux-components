@@ -160,7 +160,7 @@ export default function Home() {
               key={item.id}
               onClick={() => setActiveId(item.id)}
               className={cn(
-                "ux:w-full ux:flex ux:items-center ux:justify-between ux:px-4 ux:py-3 ux:rounded-xl ux:text-sm ux:font-medium ux:transition-all ux:group",
+                "ux:w-full ux:flex ux:items-center ux:justify-between ux:px-4 ux:py-3 ux:rounded-xl ux:text-sm ux:font-medium ux:transition-all ux:group ux:cursor-pointer",
                 activeId === item.id
                   ? "ux:bg-slate-900 ux:text-white ux:shadow-md"
                   : "ux:text-slate-500 ux:hover:bg-slate-200 ux:hover:text-slate-900"
