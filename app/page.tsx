@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import ContactForm from "@/components/ContactForm";
 import Carousel from "@/components/Carousel";
 import Media from "@/components/Media";
-import PricingTable from "@/components/PricingTable";
+import Pricing from "@/components/Pricing";
 import Map from "@/components/Map";
 import Faqs from "@/components/Faqs";
 import Locations from "@/components/Locations";
@@ -161,69 +161,295 @@ export default function Home() {
       ),
     },
     {
-      id: "pricing-table",
-      name: "Pricing Table",
+      id: "pricing",
+      name: "Pricing",
       icon: "🏷️",
-      component: (dispatch) => (
-        <PricingTable
-          title="Flexible Plans"
-          subtitle="Choose the perfect plan for your business needs."
-          showBillingToggle={true}
-          yearlyDiscountText="Save 20%"
-          plans={[
-            {
-              id: "starter",
-              name: "Starter",
-              price: "0",
-              yearlyPrice: "0",
-              description: "For individuals and small projects.",
-              features: [
-                "Up to 3 projects",
-                "Basic analytics",
-                "Community support",
-                "1GB storage",
-              ],
-              buttonText: "Start for free",
-            },
-            {
-              id: "pro",
-              name: "Pro",
-              price: "49",
-              period: "/mo",
-              yearlyPrice: "470",
-              yearlyPeriod: "/yr",
-              isMostPopular: true,
-              description: "Standard plan for growing teams.",
-              features: [
-                "Unlimited projects",
-                "Advanced analytics",
-                "Priority email support",
-                "20GB storage",
-                "Custom domains",
-              ],
-              buttonText: "Get Started",
-            },
-            {
-              id: "enterprise",
-              name: "Enterprise",
-              price: "99",
-              period: "/mo",
-              yearlyPrice: "990",
-              yearlyPeriod: "/yr",
-              description: "Scale your business with ease.",
-              features: [
-                "Everything in Pro",
-                "24/7 dedicated support",
-                "200GB storage",
-                "SLA guarantees",
-                "Advanced security",
-              ],
-              buttonText: "Contact Sales",
-            },
-          ]}
-          dispatch={dispatch}
-        />
-      ),
+      variants: [
+        {
+          id: "pricing-rich-cards",
+          label: "Rich Cards",
+          component: (dispatch) => (
+            <Pricing
+              title="Plans for every stage"
+              subtitle="From solo builders to full-scale enterprise teams."
+              showBillingToggle={true}
+              yearlyDiscountText="Save up to 40%"
+              mode="cards"
+              plans={[
+                {
+                  id: "starter",
+                  name: "Starter",
+                  price: "0",
+                  yearlyPrice: "0",
+                  description: "Your website gets a brain. No setup required.",
+                  buttonText: "Start free →",
+                  featureGroups: [
+                    {
+                      groupLabel: "Usage",
+                      features: [
+                        { label: "100 conversations/mo" },
+                        { label: "50 pages trained", subLabel: "5 pages monitored live" },
+                        { label: "Document upload", included: false },
+                        { label: "Custom Q&A pairs", included: false },
+                      ],
+                    },
+                    {
+                      groupLabel: "Avatar",
+                      features: [
+                        { label: "Default avatar", subLabel: "Watermarked" },
+                        { label: "Custom avatar", included: false },
+                      ],
+                    },
+                    {
+                      groupLabel: "Intelligence",
+                      features: [
+                        { label: "Proactive triggers", included: false },
+                        { label: "Lead notifications", included: false },
+                        { label: "Branding removal", included: false },
+                      ],
+                    },
+                    {
+                      groupLabel: "History & Sites",
+                      features: [
+                        { label: "7-day conversation history" },
+                        { label: "1 website" },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  id: "growth",
+                  name: "Growth",
+                  price: "39",
+                  period: "/mo",
+                  yearlyPrice: "31",
+                  yearlyPeriod: "/mo",
+                  yearlySavings: "Save $120/yr billed annually",
+                  description: "Your website gets a face. Visitors remember you.",
+                  buttonText: "Start 30-day trial →",
+                  featureGroups: [
+                    {
+                      groupLabel: "Usage",
+                      features: [
+                        { label: "1,000 conversations/mo", highlight: true },
+                        { label: "200 pages trained", subLabel: "30 pages monitored live", highlight: true },
+                        { label: "5 documents upload", highlight: true },
+                        { label: "Custom Q&A pairs", included: false },
+                      ],
+                    },
+                    {
+                      groupLabel: "Avatar",
+                      features: [
+                        { label: "Avatar library", subLabel: "No watermark", highlight: true },
+                        { label: "Custom lip-sync avatar", included: false },
+                      ],
+                    },
+                    {
+                      groupLabel: "Intelligence",
+                      features: [
+                        { label: "Proactive triggers", subLabel: "Page-based rules", highlight: true },
+                        { label: "Lead notifications", subLabel: "Slack + Email", highlight: true },
+                        { label: "Branding removal", highlight: true },
+                      ],
+                    },
+                    {
+                      groupLabel: "History & Sites",
+                      features: [
+                        { label: "90-day history", highlight: true },
+                        { label: "1 website" },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  id: "pro",
+                  name: "Pro",
+                  price: "79",
+                  period: "/mo",
+                  yearlyPrice: "63",
+                  yearlyPeriod: "/mo",
+                  yearlySavings: "Save $240/yr billed annually",
+                  description: "Your website gets a voice. Understands intent; speaks every language.",
+                  buttonText: "Start 30-day trial →",
+                  isMostPopular: true,
+                  mostPopularLabel: "Most Popular",
+                  accentColor: "#6366f1",
+                  featureGroups: [
+                    {
+                      groupLabel: "Usage",
+                      features: [
+                        { label: "5,000 conversations/mo", highlight: true },
+                        { label: "500 pages trained", subLabel: "100 pages monitored live", highlight: true },
+                        { label: "50 documents upload", highlight: true },
+                        { label: "100 custom Q&A pairs", highlight: true },
+                      ],
+                    },
+                    {
+                      groupLabel: "Avatar",
+                      features: [
+                        { label: "Custom lip-sync avatar", subLabel: "Upload your photo — AI animates", highlight: true },
+                        { label: "Custom 3D mascot", included: false },
+                      ],
+                    },
+                    {
+                      groupLabel: "Intelligence",
+                      features: [
+                        { label: "Smart proactive triggers", subLabel: "Intent-based, no rules needed", highlight: true },
+                        { label: "Lead notifications + WhatsApp", highlight: true },
+                        { label: "Agent live handoff", highlight: true },
+                        { label: "Conversion analytics", highlight: true },
+                      ],
+                    },
+                    {
+                      groupLabel: "History & Sites",
+                      features: [
+                        { label: "1-year history", highlight: true },
+                        { label: "Unlimited websites", highlight: true },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  id: "agency",
+                  name: "Agency",
+                  price: "199",
+                  period: "/mo",
+                  yearlyPrice: "159",
+                  yearlyPeriod: "/mo",
+                  yearlySavings: "Save $600/yr billed annually",
+                  description: "Your clients get their own person. Fully yours, fully branded.",
+                  buttonText: "Contact sales →",
+                  featureGroups: [
+                    {
+                      groupLabel: "Usage",
+                      features: [
+                        { label: "20,000 conversations/mo", highlight: true },
+                        { label: "1,000 pages per site", subLabel: "All trained pages monitored", highlight: true },
+                        { label: "200 documents upload", highlight: true },
+                        { label: "500 custom Q&A pairs", highlight: true },
+                      ],
+                    },
+                    {
+                      groupLabel: "Avatar",
+                      features: [
+                        { label: "Custom 3D brand mascot", subLabel: "Per-client avatars", highlight: true },
+                        { label: "White-label — zero branding", highlight: true },
+                      ],
+                    },
+                    {
+                      groupLabel: "Intelligence",
+                      features: [
+                        { label: "Predictive triggers", subLabel: "Visitor history across sessions", highlight: true },
+                        { label: "Client dashboards + reports", highlight: true },
+                        { label: "Reseller portal", highlight: true },
+                      ],
+                    },
+                    {
+                      groupLabel: "History & Sites",
+                      features: [
+                        { label: "1-year history", highlight: true },
+                        { label: "Unlimited websites", highlight: true },
+                      ],
+                    },
+                  ],
+                },
+              ]}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "pricing-comparison",
+          label: "Comparison Table",
+          component: (dispatch) => (
+            <Pricing
+              title="Full comparison"
+              subtitle="Every feature, side by side — no surprises."
+              showBillingToggle={true}
+              yearlyDiscountText="Save up to 40%"
+              mode="comparison"
+              plans={[
+                { id: "starter", name: "Starter", price: "0", yearlyPrice: "0", buttonText: "Start free" },
+                { id: "growth",  name: "Growth",  price: "39", period: "/mo", yearlyPrice: "31", yearlyPeriod: "/mo", buttonText: "Try Growth" },
+                { id: "pro",     name: "Pro",     price: "79", period: "/mo", yearlyPrice: "63", yearlyPeriod: "/mo", isMostPopular: true, accentColor: "#6366f1", buttonText: "Try Pro" },
+                { id: "agency",  name: "Agency",  price: "199", period: "/mo", yearlyPrice: "159", yearlyPeriod: "/mo", buttonText: "Contact Sales" },
+              ]}
+              comparisonRows={[
+                { category: "Usage & Training", label: "Conversations / month",  values: { starter: "100",      growth: "1,000",   pro: "5,000",          agency: "20,000" } },
+                { category: "Usage & Training", label: "Pages trained",          values: { starter: "50",       growth: "200",     pro: "500",            agency: "1,000 / site" } },
+                { category: "Usage & Training", label: "Document upload",        values: { starter: false,      growth: "5",       pro: "50",             agency: "200" } },
+                { category: "Usage & Training", label: "Custom Q&A pairs",       values: { starter: false,      growth: false,     pro: "100",            agency: "500" } },
+                { category: "Usage & Training", label: "Monitoring frequency",   values: { starter: "Manual",   growth: "Weekly",  pro: "Daily auto",     agency: "Real-time" } },
+                { category: "Usage & Training", label: "Websites",               values: { starter: "1",        growth: "1",       pro: "3",              agency: "Unlimited" } },
+                { category: "System",           label: "Default avatar",         values: { starter: "Watermarked", growth: true,   pro: true,             agency: true } },
+                { category: "System",           label: "Avatar library",         values: { starter: false,      growth: true,      pro: true,             agency: true } },
+                { category: "System",           label: "Custom lip-sync avatar", values: { starter: false,      growth: false,     pro: true,             agency: true } },
+                { category: "System",           label: "Custom 3D brand mascot", values: { starter: false,      growth: false,     pro: false,            agency: true } },
+                { category: "Proactive Intelligence", label: "Proactive triggers", values: { starter: false,   growth: "Page-based", pro: "Intent-based", agency: "Predictive" } },
+                { category: "Proactive Intelligence", label: "Lead notifications", values: { starter: false,   growth: "Slack + Email", pro: "+ WhatsApp", agency: "+ WhatsApp" } },
+                { category: "Proactive Intelligence", label: "Agent live handoff", values: { starter: false,   growth: false,     pro: true,             agency: true } },
+                { category: "Proactive Intelligence", label: "Conversion analytics", values: { starter: false, growth: "Basic",   pro: "Full",           agency: "Full + client reports" } },
+                { category: "Language & Voice", label: "Languages supported",    values: { starter: "English", growth: "Top 5",   pro: "50+",            agency: "Unlimited" } },
+                { category: "Language & Voice", label: "Voice conversations",    values: { starter: false,     growth: false,     pro: "Text + Voice",   agency: "Full voice agent" } },
+                { category: "History & Access", label: "Conversation history",   values: { starter: "7 days",  growth: "90 days", pro: "1 year",         agency: "1 year" } },
+                { category: "History & Access", label: "Branding removal",       values: { starter: false,     growth: true,      pro: true,             agency: true } },
+                { category: "History & Access", label: "White-label portal",     values: { starter: false,     growth: false,     pro: false,            agency: true } },
+                { category: "History & Access", label: "Reseller knowledge base", values: { starter: false,    growth: false,     pro: false,            agency: true } },
+              ]}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "pricing-both",
+          label: "Cards + Compare",
+          component: (dispatch) => (
+            <Pricing
+              title="Pricing"
+              subtitle="Switch between plan cards and the full feature comparison."
+              showBillingToggle={true}
+              yearlyDiscountText="Save 20%"
+              mode="both"
+              plans={[
+                {
+                  id: "starter", name: "Starter", price: "0", description: "Free forever.",
+                  buttonText: "Start free",
+                  features: ["100 conversations/mo", "50 pages trained", "1 website", "7-day history"],
+                },
+                {
+                  id: "pro", name: "Pro", price: "79", period: "/mo", yearlyPrice: "63", yearlyPeriod: "/mo",
+                  yearlySavings: "Save $192/yr billed annually",
+                  isMostPopular: true, accentColor: "#6366f1",
+                  description: "Everything you need to grow.",
+                  buttonText: "Start 30-day trial",
+                  features: ["5,000 conversations/mo", "500 pages trained", "50 docs upload", "100 Q&A pairs", "Voice support", "1-year history", "Unlimited websites"],
+                },
+                {
+                  id: "agency", name: "Agency", price: "199", period: "/mo", yearlyPrice: "159", yearlyPeriod: "/mo",
+                  yearlySavings: "Save $480/yr billed annually",
+                  description: "For agencies & white-label.",
+                  buttonText: "Contact sales",
+                  features: ["20,000 conversations/mo", "1,000 pages/site", "200 docs upload", "500 Q&A pairs", "Custom 3D mascot", "Reseller portal", "White-label branding"],
+                },
+              ]}
+              comparisonRows={[
+                { category: "Usage",       label: "Conversations / month", values: { starter: "100",     pro: "5,000",   agency: "20,000" } },
+                { category: "Usage",       label: "Pages trained",         values: { starter: "50",      pro: "500",     agency: "1,000/site" } },
+                { category: "Usage",       label: "Document upload",       values: { starter: false,     pro: "50",      agency: "200" } },
+                { category: "Usage",       label: "Custom Q&A pairs",      values: { starter: false,     pro: "100",     agency: "500" } },
+                { category: "Intelligence",label: "Proactive triggers",    values: { starter: false,     pro: true,      agency: true } },
+                { category: "Intelligence",label: "Conversion analytics",  values: { starter: false,     pro: "Full",    agency: "Full + reports" } },
+                { category: "Intelligence",label: "Reseller portal",       values: { starter: false,     pro: false,     agency: true } },
+                { category: "Voice",       label: "Languages supported",   values: { starter: "English", pro: "50+",     agency: "Unlimited" } },
+                { category: "Voice",       label: "Voice conversations",   values: { starter: false,     pro: true,      agency: true } },
+                { category: "Access",      label: "Conversation history",  values: { starter: "7 days",  pro: "1 year",  agency: "1 year" } },
+                { category: "Access",      label: "White-label branding",  values: { starter: false,     pro: false,     agency: true } },
+              ]}
+              dispatch={dispatch}
+            />
+          ),
+        },
+      ],
     },
     {
       id: "testimonial",

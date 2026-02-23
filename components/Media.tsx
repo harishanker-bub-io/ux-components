@@ -479,7 +479,7 @@ export default function Media({
               onClick={() => openExternal("manual_open")}
               className="ux:shrink-0 ux:px-4 ux:py-2 ux:rounded-xl ux:text-xs ux:font-bold ux:text-slate-900 ux:border ux:border-slate-300 ux:bg-white ux:shadow-sm hover:ux:bg-slate-50 ux:transition-all ux:cursor-pointer active:ux:scale-[0.98]"
             >
-              Open Source
+              Open in new tab
             </button>
           </div>
         )}
