@@ -6,6 +6,7 @@ import Carousel from "@/components/Carousel";
 import PricingTable from "@/components/PricingTable";
 import Map from "@/components/Map";
 import Faqs from "@/components/Faqs";
+import Locations from "@/components/Locations";
 
 type DispatchLog = {
   eventName: string;
@@ -248,6 +249,141 @@ export default function Home() {
           component: (dispatch: any) => (
             <Map
               height={440}
+              dispatch={dispatch}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      id: "locations",
+      name: "Locations",
+      icon: "🏢",
+      variants: [
+        {
+          id: "locations-full",
+          label: "With images",
+          component: (dispatch: any) => (
+            <Locations
+              title="Our Offices"
+              subtitle="Find a T-Hub location near you."
+              locations={[
+                {
+                  id: "thub-phase2",
+                  title: "T-Hub Phase 2",
+                  address: "Survey No. 1/1, Madhapur",
+                  city: "Hyderabad",
+                  phone: "+91 40 4444 5555",
+                  email: "hello@t-hub.co",
+                  operatingHours: "09:00-18:00",
+                  image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
+                  coordinates: { lat: 17.4474, lng: 78.3762 },
+                  tags: ["Incubation", "Coworking"],
+                },
+                {
+                  id: "thub-phase1",
+                  title: "T-Hub Phase 1",
+                  address: "IIT Hyderabad Campus, Kandi",
+                  city: "Hyderabad",
+                  phone: "+91 40 2222 3333",
+                  email: "phase1@t-hub.co",
+                  operatingHours: "09:00-18:00",
+                  image: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&h=400&fit=crop",
+                  coordinates: { lat: 17.5968, lng: 78.1244 },
+                  tags: ["Research", "Innovation"],
+                },
+                {
+                  id: "thub-bengaluru",
+                  title: "T-Hub Bengaluru",
+                  address: "Koramangala, 5th Block",
+                  city: "Bengaluru",
+                  phone: "+91 80 6666 7777",
+                  email: "blr@t-hub.co",
+                  operatingHours: "08:00-20:00",
+                  image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop",
+                  coordinates: { lat: 12.9352, lng: 77.6245 },
+                  tags: ["Coworking", "Events"],
+                },
+              ]}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "locations-no-images",
+          label: "No images",
+          component: (dispatch: any) => (
+            <Locations
+              title="Our Offices"
+              subtitle="Find a T-Hub location near you."
+              locations={[
+                {
+                  id: "thub-phase2",
+                  title: "T-Hub Phase 2",
+                  address: "Survey No. 1/1, Madhapur",
+                  city: "Hyderabad",
+                  phone: "+91 40 4444 5555",
+                  operatingHours: "09:00-18:00",
+                  coordinates: { lat: 17.4474, lng: 78.3762 },
+                  tags: ["Incubation", "Coworking"],
+                },
+                {
+                  id: "thub-phase1",
+                  title: "T-Hub Phase 1",
+                  address: "IIT Hyderabad Campus, Kandi",
+                  city: "Hyderabad",
+                  phone: "+91 40 2222 3333",
+                  operatingHours: "09:00-18:00",
+                  coordinates: { lat: 17.5968, lng: 78.1244 },
+                  tags: ["Research", "Innovation"],
+                },
+                {
+                  id: "thub-bengaluru",
+                  title: "T-Hub Bengaluru",
+                  address: "Koramangala, 5th Block",
+                  city: "Bengaluru",
+                  phone: "+91 80 6666 7777",
+                  operatingHours: "08:00-20:00",
+                  coordinates: { lat: 12.9352, lng: 77.6245 },
+                  tags: ["Coworking", "Events"],
+                },
+              ]}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "locations-single",
+          label: "Single card",
+          component: (dispatch: any) => (
+            <Locations
+              title="HQ"
+              subtitle="Our Headquarters"
+              locations={[
+                {
+                  id: "thub-phase2",
+                  title: "T-Hub Phase 2",
+                  address: "Survey No. 1/1, Madhapur",
+                  city: "Hyderabad",
+                  phone: "+91 40 4444 5555",
+                  email: "hello@t-hub.co",
+                  operatingHours: "09:00-18:00",
+                  image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
+                  coordinates: { lat: 17.4474, lng: 78.3762 },
+                  tags: ["Incubation", "Coworking"],
+                },
+              ]}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "locations-empty",
+          label: "Empty state",
+          component: (dispatch: any) => (
+            <Locations
+              title="Our Offices"
+              locations={[]}
               dispatch={dispatch}
             />
           ),
