@@ -75,18 +75,18 @@ export default function Faqs({
           }
         }
 
-        // Dispatch event after state update to avoid rendering during render
-        dispatch?.("faq_toggled", {
-          index,
-          question: faqs[index]?.question,
-          opened: !isOpen,
-          openCount: newOpen.length,
-        });
-
         return newOpen;
       });
+
+      // Dispatch event after state update to avoid rendering during render
+      dispatch?.("faq_toggled", {
+        index,
+        question: faqs[index]?.question,
+        opened: !openIndices.includes(index),
+        openCount: openIndices.includes(index) ? Math.max(0, openIndices.length - 1) : openIndices.length + 1,
+      });
     },
-    [allowMultiple, dispatch, faqs]
+    [allowMultiple, dispatch, faqs, openIndices]
   );
 
   if (!faqs || faqs.length === 0) {
