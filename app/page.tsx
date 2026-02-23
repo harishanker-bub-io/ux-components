@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import ContactForm from "@/components/ContactForm";
 import Carousel from "@/components/Carousel";
 import PricingTable from "@/components/PricingTable";
+import Map from "@/components/Map";
 import Faqs from "@/components/Faqs";
 
 type DispatchLog = {
@@ -14,11 +15,26 @@ type DispatchLog = {
 // Helper for conditional classes
 const cn = (...classes: (string | boolean | undefined)[]) => classes.filter(Boolean).join(" ");
 
+type ComponentVariant = {
+  id: string;
+  label: string;
+  component: (dispatch: any) => React.ReactNode;
+};
+
+type ComponentEntry = {
+  id: string;
+  name: string;
+  icon: string;
+  component?: (dispatch: any) => React.ReactNode;
+  variants?: ComponentVariant[];
+};
+
 export default function Home() {
   const [activeId, setActiveId] = useState("contact-form");
+  const [activeVariantId, setActiveVariantId] = useState<string | null>(null);
   const [lastEvent, setLastEvent] = useState<DispatchLog | null>(null);
 
-  const COMPONENTS = [
+  const COMPONENTS: ComponentEntry[] = [
     {
       id: "contact-form",
       name: "Contact Form",
@@ -179,9 +195,71 @@ export default function Home() {
         />
       ),
     },
+    {
+      id: "map",
+      name: "Map",
+      icon: "📍",
+      variants: [
+        {
+          id: "map-address",
+          label: "Address only",
+          component: (dispatch: any) => (
+            <Map
+              address="T-Hub, Phase 2, Madhapur, Hyderabad, Telangana, India"
+              markerLabel="T-Hub"
+              height={440}
+              showDirectionsLink={true}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "map-coordinates",
+          label: "Coordinates only",
+          component: (dispatch: any) => (
+            <Map
+              coordinates={{ lat: 17.433777767502608, lng: 78.37869814713162 }}
+              markerLabel="Hyderabad"
+              zoom={13}
+              height={440}
+              showDirectionsLink={true}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "map-both",
+          label: "Coords + Label",
+          component: (dispatch: any) => (
+            <Map
+              coordinates={{ lat: 17.433777767502608, lng: 78.37869814713162 }}
+              address="T-Hub, Phase 2, Madhapur, Hyderabad, Telangana, India"
+              markerLabel="T-Hub, Phase 2, Madhapur, Hyderabad, Telangana, India  "
+              zoom={16}
+              height={440}
+              showDirectionsLink={true}
+              dispatch={dispatch}
+            />
+          ),
+        },
+        {
+          id: "map-empty",
+          label: "No location",
+          component: (dispatch: any) => (
+            <Map
+              height={440}
+              dispatch={dispatch}
+            />
+          ),
+        },
+      ],
+    },
   ];
 
   const activeComponent = COMPONENTS.find((c) => c.id === activeId);
+  const activeVariant =
+    activeComponent?.variants?.find((v) => v.id === activeVariantId) ??
+    activeComponent?.variants?.[0];
 
   return (
     <main className="ux:min-h-screen ux:flex ux:bg-white ux:overflow-hidden">
@@ -197,7 +275,7 @@ export default function Home() {
           {COMPONENTS.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveId(item.id)}
+              onClick={() => { setActiveId(item.id); setActiveVariantId(null); }}
               className={cn(
                 "ux:w-full ux:flex ux:items-center ux:justify-between ux:px-4 ux:py-3 ux:rounded-xl ux:text-sm ux:font-medium ux:transition-all ux:group ux:cursor-pointer",
                 activeId === item.id
@@ -228,10 +306,34 @@ export default function Home() {
               </p>
             </div>
 
+            {/* Variant tabs — only shown when the active component has variants */}
+            {activeComponent?.variants && (
+              <div className="ux:flex ux:items-center ux:gap-1 ux:bg-slate-100 ux:rounded-xl ux:p-1 ux:self-start ux:w-fit">
+                {activeComponent.variants.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setActiveVariantId(v.id)}
+                    className={cn(
+                      "ux:px-4 ux:py-2 ux:rounded-lg ux:text-xs ux:font-semibold ux:transition-all ux:cursor-pointer",
+                      (activeVariant?.id === v.id)
+                        ? "ux:bg-white ux:text-slate-900 ux:shadow-sm"
+                        : "ux:text-slate-400 hover:ux:text-slate-600"
+                    )}
+                  >
+                    {v.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="ux:p-1 ux:min-h-125 ux:flex ux:items-start ux:justify-center">
-              {activeComponent?.component((eventName: string, payload: any) => {
-                setLastEvent({ eventName, payload });
-              })}
+              {activeComponent?.variants
+                ? activeVariant?.component((eventName: string, payload: any) => {
+                    setLastEvent({ eventName, payload });
+                  })
+                : activeComponent?.component?.((eventName: string, payload: any) => {
+                    setLastEvent({ eventName, payload });
+                  })}
             </div>
           </div>
         </div>

@@ -52,18 +52,17 @@ export default function FAQAccordion({
           }
         }
 
-        // Optional analytics / event tracking - moved outside state update
-        dispatch?.("faq_toggled", {
-          index,
-          question: faqs[index]?.question,
-          opened: !isOpen,
-          openCount: newOpen.length,
-        });
-
         return newOpen;
       });
+
+      // Dispatch event after state update to avoid rendering during render
+      dispatch?.("faq_toggled", {
+        index,
+        question: faqs[index]?.question,
+        opened: !openIndices.includes(index),
+      });
     },
-    [allowMultiple, dispatch, faqs]
+    [allowMultiple, dispatch, faqs, openIndices]
   );
 
   if (!faqs || faqs.length === 0) {
