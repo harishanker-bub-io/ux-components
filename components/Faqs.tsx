@@ -98,16 +98,16 @@ export default function Faqs({
   }
 
   return (
-    <div className="ux:w-full ux:max-w-6xl ux:mx-auto">
+    <div className="ux:w-full ux:max-w-6xl ux:mx-auto" style={{ fontFamily }}>
       {(title || subtitle) && (
-        <div className={`ux:mb-8 ${titleAlign === 'center' ? 'ux:text-center' : titleAlign === 'left' ? 'ux:text-left' : 'ux:text-right'}`} style={{ backgroundColor: sectionBg, fontFamily }}>
+        <div className={`ux:mb-8 ${titleAlign === 'center' ? 'ux:text-center' : titleAlign === 'left' ? 'ux:text-left' : 'ux:text-right'}`} style={{ backgroundColor: sectionBg }}>
           {title && (
-            <h2 className="ux:text-3xl ux:font-bold ux:text-slate-900 ux:mb-2" style={{ color: headingColor, fontFamily }}>
+            <h2 className="ux:text-2xl ux:font-bold ux:text-slate-900 ux:mb-2" style={{ color: headingColor }}>
               {title}
             </h2>
           )}
           {subtitle && (
-            <p className="ux:text-lg ux:text-slate-600 ux:max-w-2xl ux:mx-auto" style={{ color: bodyColor, fontFamily }}>
+            <p className="ux:text-base ux:text-slate-600 ux:max-w-2xl ux:mx-auto" style={{ color: bodyColor }}>
               {subtitle}
             </p>
           )}
@@ -127,7 +127,7 @@ export default function Faqs({
                 aria-controls={`faq-answer-${index}`}
                 style={{ backgroundColor: cardBg, fontFamily }}
               >
-                <span className="ux:text-lg ux:font-medium ux:text-slate-900 ux:group-hover:text-slate-700" style={{ color: headingColor, fontFamily }}>
+                <span className="ux:text-base ux:font-medium ux:text-slate-900 ux:group-hover:text-slate-700" style={{ color: headingColor }}>
                   {item.question}
                 </span>
 
@@ -167,7 +167,7 @@ export default function Faqs({
                   fontFamily,
                 }}
               >
-                <div className="ux:px-6 ux:pt-4 ux:pb-2 ux:text-slate-600" style={{ color: bodyColor, fontFamily }}>
+                <div className="ux:px-6 ux:pt-4 ux:pb-2 ux:text-slate-600" style={{ color: bodyColor }}>
                   {typeof item.answer === "string" ? (
                     <p className="ux:leading-relaxed">{item.answer}</p>
                   ) : (

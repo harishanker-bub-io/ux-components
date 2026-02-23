@@ -11,6 +11,7 @@ import Faqs from "@/components/Faqs";
 import Locations from "@/components/Locations";
 import Testimonial from "@/components/Testimonial";
 import Tabs from "@/components/Tabs";
+import ProductsView from "@/components/ProductsView";
 
 type DispatchEvent = {
   eventName: string;
@@ -984,6 +985,86 @@ export default function Home() {
         },
       ],
     },
+    {
+      id: "products-view",
+      name: "Products View",
+      icon: "🏡",
+      component: (dispatch: any) => (
+        <ProductsView
+          title="Real Estate Projects"
+          subtitle="Explore premium residential and commercial properties."
+          products={[
+            {
+              id: "r1",
+              name: "Skyline Heights Apartments",
+              price: "₹85 Lakhs",
+              image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=1200&h=800&fit=crop",
+              category: "Residential",
+              description: "Modern 2 & 3 BHK apartments with panoramic city views, clubhouse, and rooftop amenities."
+            },
+            {
+              id: "r2",
+              name: "Greenwood Luxury Villas",
+              price: "₹2.5 Crores",
+              image: "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=1200&h=800&fit=crop",
+              category: "Villas",
+              description: "Premium 4 BHK villas featuring private pools, landscaped gardens, and smart home systems."
+            },
+            {
+              id: "r3",
+              name: "TechPark One",
+              price: "₹1.2 Lakhs / month",
+              image: "https://tse4.mm.bing.net/th/id/OIP.OA69phdEAxCEVPMY-mgSLAHaD4?w=474&h=379&c=7&p=0",
+              category: "Commercial",
+              description: "Grade A office spaces with high-speed connectivity, coworking zones, and modern architecture."
+            },
+            {
+              id: "r4",
+              name: "Sunset Boulevard Townhomes",
+              price: "₹1.1 Crores",
+              image: "https://images.unsplash.com/photo-1501183638710-841dd1904471?w=1200&h=800&fit=crop",
+              category: "Townhouses",
+              description: "Beautifully designed 3 BHK townhomes with private terraces and community parks."
+            },
+            {
+              id: "r5",
+              name: "Horizon Smart Homes",
+              price: "₹95 Lakhs",
+              image: "https://tse4.mm.bing.net/th/id/OIP.OA69phdEAxCEVPMY-mgSLAHaD4?w=474&h=379&c=7&p=0",
+              category: "Residential",
+              description: "Energy-efficient smart homes equipped with voice automation and eco-friendly materials."
+            },
+            {
+              id: "r6",
+              name: "Urban Loft Studios",
+              price: "₹55 Lakhs",
+              image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&h=800&fit=crop",
+              category: "Studios",
+              description: "Compact and stylish studio apartments perfect for young professionals and investors."
+            },
+            {
+              id: "r7",
+              name: "MetroHub Retail Spaces",
+              price: "₹80,000 / month",
+              image: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=1200&h=800&fit=crop",
+              category: "Retail",
+              description: "High-footfall retail units located near metro access with great visibility."
+            },
+            {
+              id: "r8",
+              name: "Serenity Lakeview Residences",
+              price: "₹1.4 Crores",
+              image: "https://tse2.mm.bing.net/th/id/OIP.sgB4AENidDHmGnrkSPtcyQHaFj?w=474&h=379&c=7&p=0",
+              category: "Residential",
+              description: "Premium lake-facing apartments with nature trails, jogging tracks, and clubhouse."
+            },
+          ]}
+          layout="grid"
+          itemsPerRow={3}
+          dispatch={dispatch}
+        />
+      ),
+    }
   ];
 
   const activeComponent = COMPONENTS.find((c) => c.id === activeId);
