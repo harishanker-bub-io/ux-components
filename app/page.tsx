@@ -223,6 +223,8 @@ export default function Home() {
       icon: "💬",
       component: (dispatch) => (
         <Testimonial
+          title="Testimonials"
+          subtitle="Hear what our customers have to say."
           items={testimonialItems}
           minCards="1" // Optional: minimum cards to keep
           maxCards="6" // Optional: cannot exceed total items provided

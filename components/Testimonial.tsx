@@ -22,6 +22,10 @@ export interface TestimonialItem {
 }
 
 export interface TestimonialProps {
+  /** Section title */
+  title?: string;
+  /** Subtitle or description */
+  subtitle?: string;
   /** Array of testimonials (or a JSON-serialized array) */
   items?: TestimonialItem[] | string;
   /** Minimum number of cards to show */
@@ -386,6 +390,8 @@ function TestimonialCard({
 }
 
 export default function Testimonial({
+  title,
+  subtitle,
   items,
   minCards,
   maxCards,
@@ -488,7 +494,28 @@ export default function Testimonial({
   }
 
   return (
-    <div className="ux:w-full" style={containerStyle}>
+    <div className="ux:w-full ux:flex ux:flex-col ux:gap-6" style={containerStyle}>
+      {(title || subtitle) && (
+        <div className="ux:text-center ux:flex ux:flex-col ux:gap-2">
+          {title && (
+            <h2
+              className="ux:m-0 ux:text-3xl ux:font-bold"
+              style={{ color: headingColor, fontFamily }}
+            >
+              {title}
+            </h2>
+          )}
+          {subtitle && (
+            <p
+              className="ux:m-0 ux:text-base ux:leading-relaxed ux:max-w-2xl ux:mx-auto"
+              style={{ color: bodyColor, fontFamily }}
+            >
+              {subtitle}
+            </p>
+          )}
+        </div>
+      )}
+
       {isCarousel ? (
         <div className="ux:flex ux:flex-col ux:gap-5">
           <div className="ux:flex ux:items-center ux:gap-3">
