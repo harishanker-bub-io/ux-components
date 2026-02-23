@@ -7,11 +7,14 @@ import PricingTable from "@/components/PricingTable";
 import Map from "@/components/Map";
 import Faqs from "@/components/Faqs";
 import Locations from "@/components/Locations";
+import Testimonial, { type TestimonialItem } from "@/components/Testimonial";
 
-type DispatchLog = {
+type DispatchEvent = {
   eventName: string;
   payload?: Record<string, unknown>;
 };
+
+type DispatchFn = (eventName: string, payload?: Record<string, unknown>) => void;
 
 // Helper for conditional classes
 const cn = (...classes: (string | boolean | undefined)[]) => classes.filter(Boolean).join(" ");
@@ -19,28 +22,84 @@ const cn = (...classes: (string | boolean | undefined)[]) => classes.filter(Bool
 type ComponentVariant = {
   id: string;
   label: string;
-  component: (dispatch: any) => React.ReactNode;
+  component: (dispatch: DispatchFn) => React.ReactNode;
 };
 
 type ComponentEntry = {
   id: string;
   name: string;
   icon: string;
-  component?: (dispatch: any) => React.ReactNode;
+  component?: (dispatch: DispatchFn) => React.ReactNode;
   variants?: ComponentVariant[];
 };
 
 export default function Home() {
   const [activeId, setActiveId] = useState("contact-form");
   const [activeVariantId, setActiveVariantId] = useState<string | null>(null);
-  const [lastEvent, setLastEvent] = useState<DispatchLog | null>(null);
+  const [lastEvent, setLastEvent] = useState<DispatchEvent | null>(null);
+  const testimonialItems: TestimonialItem[] = [
+    {
+      id: "t1",
+      title: "Excellent onboarding experience",
+      description:
+        "The setup process was smooth, and the support team answered every question quickly.",
+      name: "Sarah Lee",
+      location: "Austin, TX",
+      rating: 5,
+    },
+    {
+      id: "t2",
+      title: "Fast delivery and clean UX",
+      description:
+        "We saw a clear reduction in support tickets after launch. The flow is much easier for users.",
+      name: "David Kim",
+      location: "Seattle, WA",
+      rating: 4,
+    },
+    {
+      id: "t3",
+      title: "Reliable for production",
+      description:
+        "Stable performance, clear documentation, and no surprises during deployment.",
+      name: "Priya Nair",
+      location: "San Jose, CA",
+      rating: 5,
+    },
+    {
+      id: "t4",
+      title: "Strong support and quick fixes",
+      description:
+        "Whenever we had an issue, the team responded quickly and resolved it without delay.",
+      name: "Michael Brown",
+      location: "Denver, CO",
+      rating: 4,
+    },
+    {
+      id: "t5",
+      title: "Easy to integrate",
+      description:
+        "The component API was straightforward, and integration took less than a day.",
+      name: "Ananya Patel",
+      location: "Chicago, IL",
+      rating: 5,
+    },
+    {
+      id: "t6",
+      title: "Great performance at scale",
+      description:
+        "We rolled this out to thousands of users and it remained fast and stable.",
+      name: "Ethan Clark",
+      location: "New York, NY",
+      rating: 5,
+    },
+  ];
 
   const COMPONENTS: ComponentEntry[] = [
     {
       id: "contact-form",
       name: "Contact Form",
       icon: "📝",
-      component: (dispatch: any) => (
+      component: (dispatch) => (
         <ContactForm
           title="Book a VR Tour"
           subtitle="Book a VR tour of the property with us today."
@@ -61,7 +120,7 @@ export default function Home() {
       id: "carousel",
       name: "Image Carousel",
       icon: "🖼️",
-      component: (dispatch: any) => (
+      component: (dispatch) => (
         <Carousel
           images={[
             {
@@ -104,7 +163,7 @@ export default function Home() {
       id: "pricing-table",
       name: "Pricing Table",
       icon: "🏷️",
-      component: (dispatch: any) => (
+      component: (dispatch) => (
         <PricingTable
           title="Flexible Plans"
           subtitle="Choose the perfect plan for your business needs."
@@ -159,10 +218,38 @@ export default function Home() {
       ),
     },
     {
+      id: "testimonial",
+      name: "Testimonial",
+      icon: "💬",
+      component: (dispatch) => (
+        <Testimonial
+          items={testimonialItems}
+          minCards="1" // Optional: minimum cards to keep
+          maxCards="6" // Optional: cannot exceed total items provided
+          mode="carousel"
+          columns="3" // Grid-only: used when mode="grid" (supports "1" to "6")
+          autoPlay="0" // Carousel-only: milliseconds; "0" disables auto-play
+          showDots="true"
+          cardBg="#ffffffff"
+          cardBorder="#e2e8f0"
+          sectionBg="transparent"
+          accentColor="#6366f1"
+          headingColor="#0f172a"
+          bodyColor="#475569"
+          mutedColor="#94a3b8"
+          starColor="#f59e0b"
+          fontFamily="inherit"
+          radius="xl"
+          shadow="sm"
+          dispatch={dispatch}
+        />
+      ),
+    },
+    {
       id: "faqs",
       name: "FAQs Component",
       icon: "❓",
-      component: (dispatch: any) => (
+      component: (dispatch) => (
         <Faqs
           title="Frequently Asked Questions"
           subtitle="Find answers to common questions about our services."
@@ -204,7 +291,7 @@ export default function Home() {
         {
           id: "map-address",
           label: "Address only",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Map
               address="T-Hub, Phase 2, Madhapur, Hyderabad, Telangana, India"
               markerLabel="T-Hub"
@@ -217,7 +304,7 @@ export default function Home() {
         {
           id: "map-coordinates",
           label: "Coordinates only",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Map
               coordinates={{ lat: 17.433777767502608, lng: 78.37869814713162 }}
               markerLabel="Hyderabad"
@@ -231,7 +318,7 @@ export default function Home() {
         {
           id: "map-both",
           label: "Coords + Label",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Map
               coordinates={{ lat: 17.433777767502608, lng: 78.37869814713162 }}
               address="T-Hub, Phase 2, Madhapur, Hyderabad, Telangana, India"
@@ -246,7 +333,7 @@ export default function Home() {
         {
           id: "map-empty",
           label: "No location",
-          component: (dispatch: any) => (
+          component: (dispatch) => (
             <Map
               height={440}
               dispatch={dispatch}
@@ -396,6 +483,9 @@ export default function Home() {
   const activeVariant =
     activeComponent?.variants?.find((v) => v.id === activeVariantId) ??
     activeComponent?.variants?.[0];
+  const handleDispatch: DispatchFn = (eventName, payload) => {
+    setLastEvent({ eventName, payload });
+  };
 
   return (
     <main className="ux:min-h-screen ux:flex ux:bg-white ux:overflow-hidden">
@@ -442,34 +532,10 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Variant tabs — only shown when the active component has variants */}
-            {activeComponent?.variants && (
-              <div className="ux:flex ux:items-center ux:gap-1 ux:bg-slate-100 ux:rounded-xl ux:p-1 ux:self-start ux:w-fit">
-                {activeComponent.variants.map((v) => (
-                  <button
-                    key={v.id}
-                    onClick={() => setActiveVariantId(v.id)}
-                    className={cn(
-                      "ux:px-4 ux:py-2 ux:rounded-lg ux:text-xs ux:font-semibold ux:transition-all ux:cursor-pointer",
-                      (activeVariant?.id === v.id)
-                        ? "ux:bg-white ux:text-slate-900 ux:shadow-sm"
-                        : "ux:text-slate-400 hover:ux:text-slate-600"
-                    )}
-                  >
-                    {v.label}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className="ux:p-1 ux:min-h-125 ux:flex ux:items-start ux:justify-center">
-              {activeComponent?.variants
-                ? activeVariant?.component((eventName: string, payload: any) => {
-                    setLastEvent({ eventName, payload });
-                  })
-                : activeComponent?.component?.((eventName: string, payload: any) => {
-                    setLastEvent({ eventName, payload });
-                  })}
+            <div className="ux:p-1 ux:min-h-[500px] ux:flex ux:items-start ux:justify-center">
+              {activeVariant
+                ? activeVariant.component(handleDispatch)
+                : activeComponent?.component?.(handleDispatch)}
             </div>
           </div>
         </div>
@@ -505,7 +571,7 @@ export default function Home() {
                   </button>
                 </div>
                 <pre className="ux:overflow-auto ux:rounded-xl ux:bg-slate-900 ux:p-5 ux:text-xs ux:leading-relaxed ux:text-slate-100 ux:shadow-inner ux:border ux:border-slate-800">
-                  {JSON.stringify(lastEvent.payload, null, 2)}
+                  {JSON.stringify(lastEvent.payload ?? {}, null, 2)}
                 </pre>
               </div>
             )}
