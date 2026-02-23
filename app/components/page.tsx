@@ -23,18 +23,7 @@ const COMPONENTS = [
                 ]}
             />
         ),
-    },
-    {
-        id: "placeholder-1",
-        name: "Stats Card",
-        icon: "📊",
-        component: () => (
-            <div className="ux:p-8 ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:shadow-sm ux:text-center">
-                <h3 className="ux:text-lg ux:font-semibold">Portfolio Stats</h3>
-                <p className="ux:text-sm ux:text-slate-500">Placeholder for Stats component</p>
-            </div>
-        ),
-    },
+    }
 ];
 
 export default function ComponentsPage() {
