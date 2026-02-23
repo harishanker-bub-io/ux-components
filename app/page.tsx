@@ -697,7 +697,7 @@ export default function Home() {
               </div>
             )}
 
-            <div className="ux:p-1 ux:min-h-[500px] ux:flex ux:items-start ux:justify-center">
+            <div className="ux:p-1 ux:min-h-125 ux:flex ux:items-start ux:justify-center">
               {activeVariant
                 ? activeVariant.component(handleDispatch)
                 : activeComponent?.component?.(handleDispatch)}
