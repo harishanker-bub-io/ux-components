@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 // import "@500ux/components/styles/base.css"; This will be used in the production dont remove keep in all components
 
 export const version = "1.0.0";
@@ -37,14 +37,19 @@ export default function Map({
   dispatch,
 }: MapProps) {
   const [loaded, setLoaded] = useState(false);
+  const hasValidCoordinates =
+    coordinates !== undefined &&
+    Number.isFinite(coordinates.lat) &&
+    Number.isFinite(coordinates.lng);
 
   // Derive the query string and embed URL from whichever source is available
-  const { query, embedUrl } = useMemo(() => {
-    if (coordinates) {
+  const { query, embedUrl, querySource } = useMemo(() => {
+    if (hasValidCoordinates && coordinates) {
       const q = `${coordinates.lat},${coordinates.lng}`;
       return {
         query: q,
         embedUrl: `https://maps.google.com/maps?q=${q}&z=${zoom}&output=embed`,
+        querySource: "coordinates" as const,
       };
     }
     if (address) {
@@ -52,16 +57,28 @@ export default function Map({
       return {
         query: address,
         embedUrl: `https://maps.google.com/maps?q=${q}&output=embed`,
+        querySource: "address" as const,
       };
     }
-    return { query: null, embedUrl: null };
-  }, [coordinates, address, zoom]);
+    return { query: null, embedUrl: null, querySource: null };
+  }, [hasValidCoordinates, coordinates, address, zoom]);
 
-  const displayLabel = markerLabel || address || (coordinates ? `${coordinates.lat}, ${coordinates.lng}` : null);
+  const displayLabel =
+    markerLabel || address || (hasValidCoordinates && coordinates ? `${coordinates.lat}, ${coordinates.lng}` : null);
+
+  const directionsUrl = useMemo(() => {
+    if (!query) return null;
+    const encodedQuery = querySource === "address" ? encodeURIComponent(query) : query;
+    return `https://maps.google.com/maps?q=${encodedQuery}`;
+  }, [query, querySource]);
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [embedUrl]);
 
   const handleLoad = () => {
     setLoaded(true);
-    dispatch?.("map_loaded", { query });
+    dispatch?.("map_loaded", { query, source: querySource });
   };
 
   const handleDirections = () => {
@@ -128,16 +145,16 @@ export default function Map({
           {displayLabel && (
             <span className="ux:text-xs ux:text-slate-500 ux:truncate">{displayLabel}</span>
           )}
-          {coordinates && (
+          {hasValidCoordinates && coordinates && (
             <span className="ux:text-[10px] ux:text-slate-400 ux:bg-slate-100 ux:px-2 ux:py-0.5 ux:rounded-full ux:font-mono ux:shrink-0">
               {coordinates.lat.toFixed(5)}, {coordinates.lng.toFixed(5)}
             </span>
           )}
         </div>
 
-        {showDirectionsLink && query && (
+        {showDirectionsLink && directionsUrl && (
           <a
-            href={`https://maps.google.com/maps?q=${typeof query === "string" && query.includes(" ") ? encodeURIComponent(query) : query}`}
+            href={directionsUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleDirections}
