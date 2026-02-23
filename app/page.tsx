@@ -1,65 +1,53 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import ContactForm from "@/components/ContactForm";
+
+type DispatchLog = {
+  eventName: string;
+  payload?: Record<string, unknown>;
+};
 
 export default function Home() {
+  const [lastEvent, setLastEvent] = useState<DispatchLog | null>(null);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="ux:min-h-screen ux:bg-slate-100 ux:px-6 ux:py-10">
+      <div className="ux:mx-auto ux:max-w-5xl">
+        <h1 className="ux:mb-2 ux:text-2xl ux:font-semibold ux:text-slate-900">
+          UX Components Playground
+        </h1>
+        <p className="ux:mb-8 ux:text-sm ux:text-slate-600">
+          Testing <code>components/ContactForm.tsx</code>
+        </p>
+
+        <div className="ux:grid ux:grid-cols-[auto_minmax(0,1fr)] ux:items-start ux:gap-6">
+          <ContactForm
+            title="Contact Sales"
+            subtitle="Tell us what you need and we will get back shortly."
+            submitText="Submit"
+            fields="Name,Email,Company,Message"
+            dispatch={(eventName, payload) => {
+              setLastEvent({ eventName, payload });
+            }}
+          />
+
+          <div className="ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:p-6 ux:shadow-sm">
+            <h2 className="ux:mb-3 ux:text-lg ux:font-semibold ux:text-slate-900">
+              Dispatch Event
+            </h2>
+            {!lastEvent ? (
+              <p className="ux:text-sm ux:text-slate-500">
+                Submit or validate the form to view emitted events.
+              </p>
+            ) : (
+              <pre className="ux:overflow-auto ux:rounded-xl ux:bg-slate-900 ux:p-4 ux:text-xs ux:text-slate-100">
+                {JSON.stringify(lastEvent, null, 2)}
+              </pre>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
