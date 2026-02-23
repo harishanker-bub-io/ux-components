@@ -26,7 +26,14 @@ export default function Home() {
             title="Contact Sales"
             subtitle="Tell us what you need and we will get back shortly."
             submitText="Submit"
-            fields="Name,Email,Company,Message"
+            fields={[
+              { label: "Name", required: true },
+              { label: "Email", required: true, type: "email" },
+              { label: "Phone", type: "tel" },
+              { label: "Company" },
+              { label: "Website", type: "url" },
+              { label: "Message", required: true, type: "textarea" },
+            ]}
             dispatch={(eventName, payload) => {
               setLastEvent({ eventName, payload });
             }}

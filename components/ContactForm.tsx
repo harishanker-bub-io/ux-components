@@ -4,6 +4,14 @@ import { useCallback, useMemo, useState } from "react";
 
 export const version = "1.0.0";
 
+export interface FormField {
+  label: string;
+  name?: string;
+  required?: boolean;
+  type?: "text" | "email" | "textarea" | "tel" | "url";
+  placeholder?: string;
+}
+
 export interface ContactFormProps {
   /** Form title */
   title?: string;
@@ -11,15 +19,19 @@ export interface ContactFormProps {
   subtitle?: string;
   /** Submit button text */
   submitText?: string;
-  /** Comma-separated list of field names to display */
-  fields?: string;
+  /** List of fields as an array of objects */
+  fields?: FormField[];
   /** Event dispatcher from 500ux runtime */
   dispatch?: (eventName: string, payload?: Record<string, unknown>) => void;
 }
 
 type FormValues = { [key: string]: string };
 
-const DEFAULT_FIELDS = "Name,Email,Message";
+const DEFAULT_FIELDS: FormField[] = [
+  { label: "Name", required: true },
+  { label: "Email", required: true, type: "email" },
+  { label: "Message", required: true, type: "textarea" },
+];
 
 function isTextarea(fieldName: string): boolean {
   const lower = fieldName.toLowerCase();
@@ -39,23 +51,56 @@ export default function ContactForm({
   fields = DEFAULT_FIELDS,
   dispatch,
 }: ContactFormProps) {
-  const fieldList = fields
-    .split(",")
-    .map((f) => f.trim())
-    .filter(Boolean);
+  const parsedFields = useMemo(() => {
+    return fields.map((f) => {
+      const id = f.name || f.label;
+      return {
+        id,
+        label: f.label,
+        required: !!f.required,
+        type:
+          f.type ||
+          (isTextarea(f.label)
+            ? "textarea"
+            : f.label.toLowerCase().includes("email")
+            ? "email"
+            : f.label.toLowerCase().includes("phone") ||
+              f.label.toLowerCase().includes("tel")
+            ? "tel"
+            : f.label.toLowerCase().includes("website") ||
+              f.label.toLowerCase().includes("url")
+            ? "url"
+            : "text"),
+        placeholder: f.placeholder || `Enter ${f.label.toLowerCase()}...`,
+      };
+    });
+  }, [fields]);
+
   const emptyForm: FormValues = {};
   const [values, setValues] = useState(emptyForm);
+  const [errors, setErrors] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [hovered, setHovered] = useState(false);
 
-  const handleChange = useCallback((field: string, value: string) => {
-    setValues((prev: FormValues) => ({ ...prev, [field]: value }));
+  const handleChange = useCallback((fieldId: string, value: string) => {
+    setValues((prev: FormValues) => ({ ...prev, [fieldId]: value }));
+    setErrors((prev) => prev.filter((id) => id !== fieldId));
   }, []);
 
   const handleSubmit = useCallback(() => {
+    const missing = parsedFields
+      .filter((f) => f.required && !values[f.id]?.trim())
+      .map((f) => f.id);
+
+    if (missing.length > 0) {
+      setErrors(missing);
+      return;
+    }
+
+    setErrors([]);
     setSubmitted(true);
     dispatch?.("submit", values);
-  }, [dispatch, values]);
+  }, [dispatch, values, parsedFields]);
 
   if (submitted) {
     return (
@@ -99,29 +144,43 @@ export default function ContactForm({
       </div>
 
       <div className="ux:flex ux:flex-col ux:gap-4 ux:px-7 ux:pt-5 ux:pb-7">
-        {fieldList.map((field) => (
-          <div key={field} className="ux:flex ux:flex-col ux:gap-1.5">
-            <label className="ux:text-sm ux:font-medium ux:text-slate-700">
-              {field}
-            </label>
-            {isTextarea(field) ? (
-              <textarea
-                className="ux:w-full ux:px-3 ux:py-2.5 ux:rounded-lg ux:border ux:border-slate-200 ux:bg-slate-50 ux:text-sm ux:text-slate-900 ux:outline-none ux:resize-y ux:min-h-20 ux:transition-colors focus:ux:border-slate-400"
-                placeholder={`Enter ${field.toLowerCase()}...`}
-                value={values[field] || ""}
-                onChange={(e) => handleChange(field, e.target.value)}
-              />
-            ) : (
-              <input
-                type={field.toLowerCase().includes("email") ? "email" : "text"}
-                className="ux:w-full ux:px-3 ux:py-2.5 ux:rounded-lg ux:border ux:border-slate-200 ux:bg-slate-50 ux:text-sm ux:text-slate-900 ux:outline-none ux:transition-colors focus:ux:border-slate-400"
-                placeholder={`Enter ${field.toLowerCase()}...`}
-                value={values[field] || ""}
-                onChange={(e) => handleChange(field, e.target.value)}
-              />
-            )}
-          </div>
-        ))}
+        {parsedFields.map((field) => {
+          const hasError = errors.includes(field.id);
+          return (
+            <div key={field.id} className="ux:flex ux:flex-col ux:gap-1.5">
+              <label className="ux:text-sm ux:font-medium ux:text-slate-700">
+                {field.label}
+                {field.required && (
+                  <span className="ux:text-rose-500 ux:ml-1">*</span>
+                )}
+              </label>
+              {field.type === "textarea" ? (
+                <textarea
+                  className={`ux:w-full ux:px-3 ux:py-2.5 ux:rounded-lg ux:border ux:text-sm ux:text-slate-900 ux:outline-none ux:resize-y ux:min-h-20 ux:transition-colors focus:ux:border-slate-400 ${
+                    hasError
+                      ? "ux:border-rose-500 ux:bg-rose-50"
+                      : "ux:border-slate-200 ux:bg-slate-50"
+                  }`}
+                  placeholder={field.placeholder}
+                  value={values[field.id] || ""}
+                  onChange={(e) => handleChange(field.id, e.target.value)}
+                />
+              ) : (
+                <input
+                  type={field.type}
+                  className={`ux:w-full ux:px-3 ux:py-2.5 ux:rounded-lg ux:border ux:text-sm ux:text-slate-900 ux:outline-none ux:transition-colors focus:ux:border-slate-400 ${
+                    hasError
+                      ? "ux:border-rose-500 ux:bg-rose-50"
+                      : "ux:border-slate-200 ux:bg-slate-50"
+                  }`}
+                  placeholder={field.placeholder}
+                  value={values[field.id] || ""}
+                  onChange={(e) => handleChange(field.id, e.target.value)}
+                />
+              )}
+            </div>
+          );
+        })}
 
         <button
           type="button"
