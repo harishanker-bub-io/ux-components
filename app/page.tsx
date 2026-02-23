@@ -28,7 +28,7 @@ export default function Home() {
             <h2 className="ux:mb-4 ux:text-xl ux:font-semibold ux:text-slate-900">
               Contact Form
             </h2>
-            <div className="ux:grid ux:grid-cols-[auto_minmax(0,1fr)] ux:items-start ux:gap-6">
+            <div className="ux:grid ux:grid-cols-1 lg:ux:grid-cols-[auto_minmax(0,1fr)] ux:items-start ux:gap-6">
               <ContactForm
                 title="Contact Sales"
                 subtitle="Tell us what you need and we will get back shortly."

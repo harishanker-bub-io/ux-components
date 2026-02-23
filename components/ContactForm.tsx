@@ -105,7 +105,7 @@ export default function ContactForm({
 
   if (submitted) {
     return (
-      <div className="ux:w-80 ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:shadow-lg ux:overflow-hidden">
+      <div className="ux:w-full ux:max-w-md ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:shadow-lg ux:overflow-hidden">
         <div className="ux:flex ux:flex-col ux:items-center ux:gap-3 ux:py-10 ux:px-7 ux:text-center">
           <div className="ux:w-14 ux:h-14 ux:rounded-full ux:bg-emerald-50 ux:flex ux:items-center ux:justify-center ux:text-2xl ux:text-emerald-500">
             &#10003;
@@ -132,8 +132,8 @@ export default function ContactForm({
   }
 
   return (
-    <div className="ux:w-96 ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:shadow-lg ux:overflow-hidden">
-      <div className="ux:px-7 ux:pt-7">
+    <div className="ux:w-full ux:max-w-md ux:rounded-2xl ux:border ux:border-slate-200 ux:bg-white ux:shadow-lg ux:overflow-hidden">
+      <div className="ux:px-4 sm:ux:px-7 ux:pt-7">
         <h3 className="ux:text-xl ux:font-semibold ux:text-slate-900 ux:m-0">
           {title}
         </h3>
@@ -144,7 +144,7 @@ export default function ContactForm({
         )}
       </div>
 
-      <div className="ux:flex ux:flex-col ux:gap-4 ux:px-7 ux:pt-5 ux:pb-7">
+      <div className="ux:flex ux:flex-col ux:gap-4 ux:px-4 sm:ux:px-7 ux:pt-5 ux:pb-7">
         {parsedFields.map((field) => {
           const hasError = errors.includes(field.id);
           return (
