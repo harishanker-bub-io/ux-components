@@ -4,6 +4,7 @@ import { useState } from "react";
 import ContactForm from "@/components/ContactForm";
 import Carousel from "@/components/Carousel";
 import PricingTable from "@/components/PricingTable";
+import Faqs from "@/components/Faqs";
 
 type DispatchLog = {
   eventName: string;
@@ -140,6 +141,44 @@ export default function Home() {
         />
       ),
     },
+    {
+      id: "faqs",
+      name: "FAQs Component",
+      icon: "❓",
+      component: (dispatch: any) => (
+        <Faqs
+          title="Frequently Asked Questions"
+          subtitle="Find answers to common questions about our services."
+          faqs={[
+            {
+              question: "How do I get started with your service?",
+              answer: "Getting started is easy! Simply sign up for a free account and follow our quick setup guide. Our team will be available to help you every step of the way."
+            },
+            {
+              question: "What payment methods do you accept?",
+              answer: "We accept all major credit cards, PayPal, and bank transfers for enterprise customers. All payments are processed securely."
+            },
+            {
+              question: "Can I cancel my subscription at any time?",
+              answer: "Yes, you can cancel your subscription at any time with no penalties. Your service will continue until the end of your current billing cycle."
+            },
+            {
+              question: "Do you offer a free trial?",
+              answer: "Yes, we offer a 14-day free trial on all our paid plans. No credit card is required to start your trial."
+            },
+            {
+              question: "Is there a limit to the number of users on my account?",
+              answer: "Our Starter plan supports up to 5 users. The Pro plan supports unlimited users, and the Enterprise plan includes advanced user management features."
+            },
+            {
+              question: "How secure is my data with your service?",
+              answer: "We take security very seriously. All data is encrypted in transit and at rest. We comply with industry standards and conduct regular security audits."
+            }
+          ]}
+          dispatch={dispatch}
+        />
+      ),
+    },
   ];
 
   const activeComponent = COMPONENTS.find((c) => c.id === activeId);
@@ -189,7 +228,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="ux:p-1 ux:min-h-[500px] ux:flex ux:items-start ux:justify-center">
+            <div className="ux:p-1 ux:min-h-125 ux:flex ux:items-start ux:justify-center">
               {activeComponent?.component((eventName: string, payload: any) => {
                 setLastEvent({ eventName, payload });
               })}
